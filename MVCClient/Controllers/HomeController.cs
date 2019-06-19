@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 
 namespace MvcClient.Controllers
 {
+	[Authorize]
     public class HomeController : Controller
     {
         public IActionResult Index()
