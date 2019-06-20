@@ -6,9 +6,11 @@ using System;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
+using IdentityServer4;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 
 namespace IdentityServer
 {
@@ -46,6 +48,30 @@ namespace IdentityServer
 				builder.AddSigningCredential(cert);
 				//throw new Exception("need to configure key material");
 			}
+
+			//services.AddAuthentication()
+			//	.AddGoogle("Google", options =>
+			//	{
+			//		options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+
+			//		options.ClientId = "empty";
+			//		options.ClientSecret = "empty";
+			//	})
+			//	.AddOpenIdConnect("oidc", "OpenID Connect", options =>
+			//	{
+			//		options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+			//		options.SignOutScheme = IdentityServerConstants.SignoutScheme;
+			//		options.SaveTokens = true;
+
+			//		options.Authority = "https://demo.identityserver.io/";
+			//		options.ClientId = "implicit";
+
+			//		options.TokenValidationParameters = new TokenValidationParameters
+			//		{
+			//			NameClaimType = "name",
+			//			RoleClaimType = "role"
+			//		};
+			//	});
 		}
 
 		public void Configure(IApplicationBuilder app)
