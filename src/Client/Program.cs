@@ -10,8 +10,6 @@ namespace Client
 	{
 		private static async Task Main()
 		{
-			ServerTest2.ImportTestClass.Test();
-
 			Console.WriteLine();
 
 			// discover endpoints from metadata
