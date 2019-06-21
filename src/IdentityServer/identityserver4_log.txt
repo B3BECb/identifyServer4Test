@@ -358,3 +358,15 @@
 2019-06-20 15:21:59.921 +03:00 [DBG] Endpoint enabled: Discovery, successfully created handler: IdentityServer4.Endpoints.DiscoveryKeyEndpoint
 2019-06-20 15:21:59.922 +03:00 [INF] Invoking IdentityServer endpoint: IdentityServer4.Endpoints.DiscoveryKeyEndpoint for /.well-known/openid-configuration/jwks
 2019-06-20 15:21:59.924 +03:00 [DBG] Start key discovery request
+2019-06-21 12:57:35.362 +03:00 [INF] Starting IdentityServer4 version 2.4.0.0
+2019-06-21 12:57:35.399 +03:00 [INF] Using the default authentication scheme idsrv for IdentityServer
+2019-06-21 12:57:35.400 +03:00 [DBG] Using idsrv as default ASP.NET Core scheme for authentication
+2019-06-21 12:57:35.400 +03:00 [DBG] Using idsrv as default ASP.NET Core scheme for sign-in
+2019-06-21 12:57:35.400 +03:00 [DBG] Using idsrv as default ASP.NET Core scheme for sign-out
+2019-06-21 12:57:35.401 +03:00 [DBG] Using idsrv as default ASP.NET Core scheme for challenge
+2019-06-21 12:57:35.401 +03:00 [DBG] Using idsrv as default ASP.NET Core scheme for forbid
+2019-06-21 12:57:35.484 +03:00 [DBG] Starting grant removal
+2019-06-21 13:57:35.600 +03:00 [INF] Removing 0 grants
+2019-06-21 14:57:36.295 +03:00 [INF] Removing 0 grants
+2019-06-21 15:00:38.131 +03:00 [DBG] TaskCanceledException. Exiting.
+2019-06-21 15:00:38.143 +03:00 [DBG] Stopping grant removal
