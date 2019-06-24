@@ -7,6 +7,5 @@ module.exports = {
 			enableInSFC: false
 		}
 	},
-	indexPath: "./removedContent/html/index.removed",
-	outputDir: "./wwwroot/dist"
+	outputDir: "../wwwroot"
 };
