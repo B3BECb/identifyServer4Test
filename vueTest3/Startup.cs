@@ -59,7 +59,7 @@ namespace vueTest3
 
 				if (env.IsDevelopment())
 				{
-					spa.UseVueCli(npmScript: "serve");
+					//spa.UseVueCli(npmScript: "serve");
 				}
 			});
 		}

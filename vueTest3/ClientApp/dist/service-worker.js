@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.635f6968f6727567d3b4c4ba3ed57030.js"
+  "/precache-manifest.71e3fb0f37f601d27d75316cc6765525.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "automarshal2_web"});

@@ -6,10 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "buildForVs": "npm install && npm run lint && npm run test:unit && npm run build && npm run copyToBin",
-    "buildForVsDebug": "npm run lint && npm run test:unit && npm run build && npm run copyToBin",
-    "copyToBin": "xcopy /I /E /Y \".\\dist\" ",
-    "copyToBinDebug": "xcopy /I /E /Y \".\\dist\" \"..\\..\\Automarshal.Http.prj\\bin\\Debug\\dist\"",
+    "buildForVs": "npm install && npm run lint && npm run test:unit && npm run build",
+    "buildForVsDebug": "npm run lint && npm run test:unit && npm run build",
     "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'",
     "test:unit": "vue-cli-service test:unit"
   },

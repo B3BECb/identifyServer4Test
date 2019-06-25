@@ -12,7 +12,7 @@ import * as i18nModule from "../i18n";
 
 @Component
 export default class LocaleChanger extends Vue {
-	private _currentLang;
+	private _currentLang: string = i18nModule.defaultLocale;
 
 	public langs = i18nModule.AvailableLocales;
 
