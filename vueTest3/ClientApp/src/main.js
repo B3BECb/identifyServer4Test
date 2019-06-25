@@ -11,4 +11,4 @@ new Vue({
     i18n,
     render: (h) => h(App),
 }).$mount("#app");
-//# sourceMappingURL=main.js.map
+//# sourceMappingURL=main.js.map

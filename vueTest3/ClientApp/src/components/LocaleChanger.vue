@@ -8,16 +8,26 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import {AvailableLocales as locales} from "../i18n";
+import * as i18nModule from "../i18n";
 
 @Component
 export default class LocaleChanger extends Vue {
-	public CurrentLang = this.$i18n.locale;
+	private _currentLang;
 
-	public langs = locales;
+	public langs = i18nModule.AvailableLocales;
 
 	public localeChanged() {
-		this.$router.push({ name: this.$router.currentRoute.name, params: {locale: this.CurrentLang}});
+		this.$router.push({ name: this.$router.currentRoute.name, params: {locale: this._currentLang}});
+	}
+
+	public get CurrentLang()
+	{
+		return i18nModule.default.locale;
+	}
+
+	public set CurrentLang(value)
+	{
+		this._currentLang = value;
 	}
 }
 </script>

@@ -13,22 +13,20 @@
 </template>
 
 <script lang="ts">
-	import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 
-	@Component
-	export default class Authorization extends Vue {
-		async login()
-		{
-			let { username, password } = this;
-			await this.$store.dispatch(AUTH_REQUEST, { username, password });
-			this.$router.push('/');
-		}
+@Component
+export default class Authorization extends Vue {
+	// public async login() {
+	// 	const { username, password } = this;
+	// 	await this.$store.dispatch(AUTH_REQUEST, { username, password });
+	// 	this.$router.push("/");
+	// }
 
-		LoginRoutine(user)
-		{
-
-		}
-	};
+	// public LoginRoutine(user) {
+	//
+	// }
+}
 </script>
 
 <style scoped>

@@ -6,4 +6,4 @@ export default new Vuex.Store({
     mutations: {},
     actions: {},
 });
-//# sourceMappingURL=store.js.map
+//# sourceMappingURL=store.js.map

@@ -28,4 +28,4 @@ router.beforeEach((to, from, next) => {
     I18n.loadLanguageAsync(lang).then(() => next());
 });
 export default router;
-//# sourceMappingURL=router.js.map
+//# sourceMappingURL=router.js.map

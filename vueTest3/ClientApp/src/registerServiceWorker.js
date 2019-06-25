@@ -26,4 +26,4 @@ if (process.env.NODE_ENV === "production") {
         },
     });
 }
-//# sourceMappingURL=registerServiceWorker.js.map
+//# sourceMappingURL=registerServiceWorker.js.map

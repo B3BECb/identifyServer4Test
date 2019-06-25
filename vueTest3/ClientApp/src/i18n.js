@@ -59,4 +59,4 @@ export function loadLanguageAsync(lang) {
 }
 export default i18n;
 export { DEFAULT_LANG as defaultLocale, AvailableLocales, };
-//# sourceMappingURL=i18n.js.map
+//# sourceMappingURL=i18n.js.map
