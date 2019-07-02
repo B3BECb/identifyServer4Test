@@ -1,40 +1,34 @@
 <template>
-  <div id="app">
-
-  </div>
+	<div id = "app">
+		<router-view />
+	</div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script lang = "ts">
+	import { Component, Vue } from "vue-property-decorator";
 
-@Component({
-  components:
-			{
+	@Component({
+		components:
+			{},
+	})
 
-			},
-})
+	export default class App
+		extends Vue
+	{
 
-export default class App extends Vue {
-
-}
+	}
 </script>
 
-<style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
+<style lang = "scss">
+
+	#app {
+		&,*{
+			font-family: Roboto, sans-serif;
+			font-size: 14px;
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+			color: #2C3E50;
+		}
+		text-align: center;
+	}
 </style>
