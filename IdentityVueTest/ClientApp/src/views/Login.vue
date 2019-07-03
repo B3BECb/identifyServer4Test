@@ -3,76 +3,12 @@
 		<div></div>
 		<div></div>
 		<form @submit.prevent = "someAction()">
-			<!--
-			  Ошибка будет отображена пользователю сразу же,
-			  флаг $v.passportData.$invalid говорит о том, валидное поле или нет
-			-->
-			<div>
-				<input type = "text"
-					   v-model = "passportData">
-				<span v-if = "$v.name.$error">
-					<span v-if = "$v.passportData.$invalid">
-						Серия и номер паспорта должны быть в формате 1234 567890
-				 	</span>
-				</span>
-			</div>
-
-			<!--
-			  Ошибка будет отображена после события blur
-
-			  Метод $touch() выставит флагу $v.passportDate.$dirty значение true.
-			  Флаг $v.passportDate.$error высчитывается как
-			  $v.passportDate.$invalid && $v.passportDate.$dirty
-			-->
-			<!--<div>
-				<input type = "text"
-					   v-model = "passportDate"
-					   @blur = "$v.passportDate.$touch()">
-				<span v-if = "$v.passportDate.$error">
-					Дата должна быть в формате ДД.ММ.ГГГГ
-				  </span>
-			</div>-->
-
-
-			<!--
-			  Поле, которое тоже выведет ошибку после события blur, но с другим подходом
-
-			  $v.passportDate.$model - объект, при записи данных в который:
-			  - Vuelidate присвоит переданное значение полю passportDate
-			  - Vuelidate вызовет метод $touch() у объекта $v.passportDate
-
-			  Модификатор lazy необходим, чтобы присваивание произошло только после blur
-			-->
-			<!--<div>
-				<input type = "text"
-					   v-model.lazy = "$v.passportDate.$model">
-				<span v-if = "$v.passportDate.$error">
-					Дата должна быть в формате ДД.ММ.ГГГГ
-				  </span>
-			</div>-->
-
-			<!-- Поле с несколькими ошибками -->
-			<div>
-				<input type = "text"
-					   v-model = "name"
-					   @blur = "$v.name.$touch()">
-				<span v-if = "$v.name.$error">
-					<template v-if = "!$v.name.maxLength">
-					  Длина имени не должна превышать {{ $v.name.$params.maxLength.max }} символов
-					</template>
-					<template v-else-if = "!$v.name.alpha">
-					  Имя должно содержать только буквы
-					</template>
-					<template v-else>
-					  Имя обязательно для заполнения
-					</template>
-				  </span>
-			</div>
-
-			<button type = "submit"
-					:disabled = "$v.$invalid">
-				Отправить форму
-			</button>
+			<md-card class="md-layout-item md-size-50 md-small-size-100">
+				<md-card-header>
+					<div class="md-title">Users</div>
+				</md-card-header>
+				<md-button type="submit" class="md-primary" :disabled="$v.$invalid">Create user</md-button>
+			</md-card>
 		</form>
 		<div></div>
 		<div></div>
@@ -81,14 +17,19 @@
 </template>
 
 <script lang = "ts">
-	import { validationMixin, Validation } from "vuelidate";
+	import { validationMixin } from "vuelidate";
 	import {
 		required,
 		email,
 		minLength,
 		maxLength,
 	} from "vuelidate/lib/validators";
-	import { Component, Vue, Mixins } from "vue-property-decorator";
+	import { Component, Vue } from "vue-property-decorator";
+	import { MdButton, MdContent, MdCard } from 'vue-material/dist/components'
+
+	Vue.use(MdButton)
+	Vue.use(MdContent)
+	Vue.use(MdCard)
 
 	@Component({
 		mixins:      [validationMixin],
