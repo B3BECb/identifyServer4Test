@@ -3,11 +3,24 @@
 		<div></div>
 		<div></div>
 		<form @submit.prevent = "someAction()">
-			<md-card class="md-layout-item md-size-50 md-small-size-100">
+			<md-card class = "md-layout-item md-size-50 md-small-size-100">
 				<md-card-header>
-					<div class="md-title">Users</div>
+					<div class = "md-title">Users</div>
 				</md-card-header>
-				<md-button type="submit" class="md-primary" :disabled="$v.$invalid">Create user</md-button>
+
+				<md-card-content>
+
+				</md-card-content>
+
+				<md-progress-bar md-mode = "indeterminate"
+								 v-if = "sending" />
+
+				<md-card-actions>
+					<md-button type = "submit"
+							   class = "md-primary"
+							   :disabled = "$v.$invalid">Create user
+					</md-button>
+				</md-card-actions>
 			</md-card>
 		</form>
 		<div></div>
@@ -25,11 +38,12 @@
 		maxLength,
 	} from "vuelidate/lib/validators";
 	import { Component, Vue } from "vue-property-decorator";
-	import { MdButton, MdContent, MdCard } from 'vue-material/dist/components'
+	import { MdButton, MdContent, MdCard, MdProgress } from 'vue-material/dist/components';
 
-	Vue.use(MdButton)
-	Vue.use(MdContent)
-	Vue.use(MdCard)
+	Vue.use(MdButton);
+	Vue.use(MdContent);
+	Vue.use(MdCard);
+	Vue.use(MdProgress);
 
 	@Component({
 		mixins:      [validationMixin],
@@ -50,6 +64,7 @@
 	{
 		passportData = null;
 		name         = null;
+		sending      = true;
 	}
 </script>
 
