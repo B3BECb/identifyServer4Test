@@ -1,65 +1,86 @@
 <template>
-	<div class="view login">
+	<div class = "view login">
 		<div></div>
 		<div></div>
-		<form novalidate class="md-layout" @submit.prevent="validateUser">
-			<md-card class="md-layout-item md-size-50 md-small-size-100">
-				<md-card-header>
-					<div class="md-title">Users</div>
-				</md-card-header>
+		<form @submit.prevent = "someAction()">
+			<!--
+			  Ошибка будет отображена пользователю сразу же,
+			  флаг $v.passportData.$invalid говорит о том, валидное поле или нет
+			-->
+			<div>
+				<input type = "text"
+					   v-model = "passportData">
+				<span v-if = "$v.name.$error">
+					<span v-if = "$v.passportData.$invalid">
+						Серия и номер паспорта должны быть в формате 1234 567890
+				 	</span>
+				</span>
+			</div>
 
-				<md-card-content>
-					<div class="md-layout md-gutter">
-						<div class="md-layout-item md-small-size-100">
-							<md-field :class="getValidationClass('firstName')">
-								<label for="first-name">First Name</label>
-								<md-input name="first-name" id="first-name" autocomplete="given-name" v-model="form.firstName" :disabled="sending" />
-								<span class="md-error" v-if="!$v.form.firstName.required">The first name is required</span>
-								<span class="md-error" v-else-if="!$v.form.firstName.minlength">Invalid first name</span>
-							</md-field>
-						</div>
+			<!--
+			  Ошибка будет отображена после события blur
 
-						<div class="md-layout-item md-small-size-100">
-							<md-field :class="getValidationClass('lastName')">
-								<label for="last-name">Last Name</label>
-								<md-input name="last-name" id="last-name" autocomplete="family-name" v-model="form.lastName" :disabled="sending" />
-								<span class="md-error" v-if="!$v.form.lastName.required">The last name is required</span>
-								<span class="md-error" v-else-if="!$v.form.lastName.minlength">Invalid last name</span>
-							</md-field>
-						</div>
-					</div>
+			  Метод $touch() выставит флагу $v.passportDate.$dirty значение true.
+			  Флаг $v.passportDate.$error высчитывается как
+			  $v.passportDate.$invalid && $v.passportDate.$dirty
+			-->
+			<!--<div>
+				<input type = "text"
+					   v-model = "passportDate"
+					   @blur = "$v.passportDate.$touch()">
+				<span v-if = "$v.passportDate.$error">
+					Дата должна быть в формате ДД.ММ.ГГГГ
+				  </span>
+			</div>-->
 
-					<md-field :class="getValidationClass('email')">
-						<label for="email">Email</label>
-						<md-input type="email" name="email" id="email" autocomplete="email" v-model="form.email" :disabled="sending" />
-						<span class="md-error" v-if="!$v.form.email.required">The email is required</span>
-						<span class="md-error" v-else-if="!$v.form.email.email">Invalid email</span>
-					</md-field>
-				</md-card-content>
 
-				<md-progress-bar md-mode="indeterminate" v-if="sending" />
+			<!--
+			  Поле, которое тоже выведет ошибку после события blur, но с другим подходом
 
-				<md-card-actions>
-					<md-button type="submit" class="md-primary" :disabled="sending">Create user</md-button>
-				</md-card-actions>
-			</md-card>
+			  $v.passportDate.$model - объект, при записи данных в который:
+			  - Vuelidate присвоит переданное значение полю passportDate
+			  - Vuelidate вызовет метод $touch() у объекта $v.passportDate
 
-			<md-snackbar :md-active.sync="userSaved">The user {{ lastUser }} was saved with success!</md-snackbar>
+			  Модификатор lazy необходим, чтобы присваивание произошло только после blur
+			-->
+			<!--<div>
+				<input type = "text"
+					   v-model.lazy = "$v.passportDate.$model">
+				<span v-if = "$v.passportDate.$error">
+					Дата должна быть в формате ДД.ММ.ГГГГ
+				  </span>
+			</div>-->
+
+			<!-- Поле с несколькими ошибками -->
+			<div>
+				<input type = "text"
+					   v-model = "name"
+					   @blur = "$v.name.$touch()">
+				<span v-if = "$v.name.$error">
+					<template v-if = "!$v.name.maxLength">
+					  Длина имени не должна превышать {{ $v.name.$params.maxLength.max }} символов
+					</template>
+					<template v-else-if = "!$v.name.alpha">
+					  Имя должно содержать только буквы
+					</template>
+					<template v-else>
+					  Имя обязательно для заполнения
+					</template>
+				  </span>
+			</div>
+
+			<button type = "submit"
+					:disabled = "$v.$invalid">
+				Отправить форму
+			</button>
 		</form>
-		<div class="form login">
-			<div>Mallenom</div>
-			<div>email/login</div>
-			<div>password</div>
-			<div>Sing in</div>
-			<div>providers</div>
-		</div>
 		<div></div>
 		<div></div>
 		<div>langs</div>
 	</div>
 </template>
 
-<script lang="ts">
+<script lang = "ts">
 	import { validationMixin, Validation } from "vuelidate";
 	import {
 		required,
@@ -69,51 +90,30 @@
 	} from "vuelidate/lib/validators";
 	import { Component, Vue, Mixins } from "vue-property-decorator";
 
-	// @Component
-	export default class Login extends Mixins<Validation>(validationMixin) {
-		public form = {
-			firstName: null,
-			lastName: null,
-			age: null,
-			email: null,
-		};
-		public userSaved = false;
-		public sending = false;
-		public lastUser = null;
-		public validations = {
-			form: {
-				firstName: {
-					required,
-					minLength: minLength(3),
-				},
-				lastName: {
-					required,
-					minLength: minLength(3),
-				},
-				age: {
-					required,
-					maxLength: maxLength(3),
-				},
-				email: {
-					required,
-					email,
-				},
+	@Component({
+		mixins:      [validationMixin],
+		validations: {
+			passportData: {
+				required,
+				validFormat: (val: string) => /^\d{4} \d{6}$/.test(val),
 			},
-		};
-		getValidationClass (fieldName)
-		{
-			const field = this.$v.form[fieldName];
-
-			if (field) {
-				return {
-					'md-invalid': field.$invalid && field.$dirty
-				}
-			}
-		}
+			name:         {
+				required,
+				maxLength: maxLength(10),
+				alpha:     (val: string) => /^[а-яё]*$/i.test(val),
+			},
+		},
+	})
+	export default class Login
+		extends Vue
+	{
+		passportData = null;
+		name         = null;
 	}
 </script>
 
-<style scoped lang="scss">
+<style scoped
+	   lang = "scss">
 	.md-progress-bar {
 		position: absolute;
 		top: 0;
