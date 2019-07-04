@@ -27,7 +27,7 @@
 				<div class = "actions md-layout md-alignment-center-right">
 					<md-button type = "submit"
 							   class = "md-raised md-primary"
-							   v-on:click="someAction()"
+							   v-on:click="submit()"
 							   :disabled = "sending">
 						{{$t('singIn')}}
 					</md-button>
@@ -57,6 +57,7 @@
 	import { Component, Vue } from "vue-property-decorator";
 	// @ts-ignore
 	import { MdButton, MdContent, MdCard, MdProgress, MdField } from 'vue-material/dist/components';
+	import axios from "axios";
 
 	Vue.use(MdButton);
 	Vue.use(MdContent);
@@ -92,9 +93,25 @@
 			}
 		}
 
-		someAction()
+		async submit()
 		{
 			this.$v.$touch();
+			if(this.$v.$invalid)
+				return;
+
+			let bodyFD = new FormData();
+
+			bodyFD.set("login", this.login);
+			bodyFD.set("password", this.password);
+
+			let data = await axios({
+				method: 'post',
+				url: '/login',
+				data: bodyFD,
+				config: { headers: {'Content-Type': 'multipart/form-data' }}
+			});
+
+			console.log(data);
 		}
 	}
 </script>
