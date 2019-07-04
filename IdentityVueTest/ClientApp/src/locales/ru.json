@@ -1,3 +1,6 @@
 {
-  "message": "привет i18n !!"
+  "login": "Логин",
+  "loginError": "Требуется логин",
+  "password": "Пароль",
+  "passwordError": "Требуется пароль"
 }
