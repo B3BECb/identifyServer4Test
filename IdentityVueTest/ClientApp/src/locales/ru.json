@@ -2,5 +2,6 @@
   "login": "Логин",
   "loginError": "Требуется логин",
   "password": "Пароль",
-  "passwordError": "Требуется пароль"
+  "passwordError": "Требуется пароль",
+  "singIn": "Войти"
 }

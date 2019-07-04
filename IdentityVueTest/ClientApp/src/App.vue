@@ -28,14 +28,14 @@
 	@include md-register-theme("default", (
 			primary: md-get-palette-color(blue, A200), // The primary color of your application
 			accent: md-get-palette-color(green, A200), // The accent or secondary color
-			theme: dark
+			theme: light
 	));
 
 	@import "~vue-material/dist/theme/all";
 
 	#app {
 		&,*{
-			/*font-family: Roboto, sans-serif;*/
+			font-family: Roboto, sans-serif;
 			/*font-size: 14px;*/
 			-webkit-font-smoothing: antialiased;
 			-moz-osx-font-smoothing: grayscale;

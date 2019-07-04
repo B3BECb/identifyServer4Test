@@ -2,5 +2,6 @@
   "login": "Login",
   "loginError": "Login is required",
   "password": "Password",
-  "passwordError": "Password is required"
+  "passwordError": "Password is required",
+  "singIn": "Sing in"
 }
