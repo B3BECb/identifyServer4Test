@@ -1,16 +1,16 @@
 <template>
-	<div class="view-container">
+	<div class = "view-container">
 		<div class = "centered-container">
 			<md-content class = "md-elevation-3">
 				<div class = "title">
 					<div class = "md-title">Mallenom systems</div>
 				</div>
-				<div class="form">
+				<div class = "form">
 					<md-field :class = "getValidationClass('login')">
 						<label>{{$t('login')}}</label>
 						<md-input v-model = "login"
 								  autocomplete = "name"
-								  ></md-input>
+						></md-input>
 						<span class = "md-error"
 							  v-if = "!$v.login.required">{{$t('loginError')}}</span>
 					</md-field>
@@ -27,7 +27,7 @@
 				<div class = "actions md-layout md-alignment-center-right">
 					<md-button type = "submit"
 							   class = "md-raised md-primary"
-							   v-on:click="submit()"
+							   v-on:click = "submit()"
 							   :disabled = "sending">
 						{{$t('singIn')}}
 					</md-button>
@@ -42,9 +42,9 @@
 		</div>
 		<div class = "langs">
 			<div></div>
-			<div style="text-align: end">Язык:</div>
-			<router-link :to="{ name: 'login', params: {locale: 'ru'}}" >Русский</router-link>
-			<router-link :to="{ name: 'login', params: {locale: 'en'}}" >English</router-link>
+			<div style = "text-align: end">Язык:</div>
+			<router-link :to = "{ name: 'login', params: {locale: 'ru'}}">Русский</router-link>
+			<router-link :to = "{ name: 'login', params: {locale: 'en'}}">English</router-link>
 		</div>
 	</div>
 </template>
@@ -56,8 +56,9 @@
 	} from "vuelidate/lib/validators";
 	import { Component, Vue } from "vue-property-decorator";
 	// @ts-ignore
-	import { MdButton, MdContent, MdCard, MdProgress, MdField } from 'vue-material/dist/components';
-	import axios from "axios";
+	import { MdButton, MdContent, MdCard, MdProgress, MdField } from "vue-material/dist/components";
+	import Axios from "axios";
+	import {AxiosRequestConfig} from "axios";
 
 	Vue.use(MdButton);
 	Vue.use(MdContent);
@@ -77,39 +78,48 @@
 	export default class Login
 		extends Vue
 	{
-		login    = null;
-		password = null;
-		sending  = false;
+		public login: string    = "";
+		public password: string = "";
+		public sending: boolean = false;
 
-		getValidationClass(fieldName)
+		public getValidationClass(fieldName: string)
 		{
-			let field = this.$v[fieldName];
+			const field = this.$v[fieldName];
 
 			if(field)
 			{
 				return {
-					'md-invalid': field.$invalid && field.$dirty,
+					"md-invalid": field.$invalid && field.$dirty,
 				};
 			}
 		}
 
-		async submit()
+		public async submit()
 		{
 			this.$v.$touch();
 			if(this.$v.$invalid)
+			{
 				return;
+			}
 
-			let bodyFD = new FormData();
+			const bodyFD = new FormData();
 
 			bodyFD.set("login", this.login);
 			bodyFD.set("password", this.password);
 
-			let data = await axios({
-				method: 'post',
-				url: '/login',
-				data: bodyFD,
-				config: { headers: {'Content-Type': 'multipart/form-data' }}
-			});
+			// Axios.request({
+			// 	method: 'post',
+			// 	url:    '/login',
+			// 	data:   bodyFD,
+			// 	config: { headers: { 'Content-Type': 'multipart/form-data' } },
+			// } as AxiosRequestConfig)
+
+			const data = await Axios({
+				method: "post",
+				url:    "/login",
+				data:   bodyFD,
+				config: { headers: { "Content-Type": "multipart/form-data" } },
+			} as AxiosRequestConfig);
 
 			console.log(data);
 		}
@@ -175,8 +185,7 @@
 			}
 		}
 
-		.langs
-		{
+		.langs {
 			align-items: end;
 			padding-bottom: 8px;
 			display: grid;

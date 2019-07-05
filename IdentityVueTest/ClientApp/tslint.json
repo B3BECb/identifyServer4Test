@@ -9,8 +9,10 @@
     ]
   },
   "rules": {
+    "whitespace": [false, "check-branch"],
     "quotemark": [true, "double"],
     "indent": [true, "tabs", 4],
+    "one-line": [false, "check-open-brace"],
     "interface-name": false,
     "ordered-imports": false,
     "object-literal-sort-keys": false,
