@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
@@ -31,7 +32,15 @@ namespace IdentityVueTest
 				configuration.RootPath = "ClientApp/dist";
 			});
 
-			var builder = services.AddIdentityServer()
+			services.AddAntiforgery(options =>
+			{
+				options.HeaderName = "X-XSRF-TOKEN";
+			});
+
+			var builder = services.AddIdentityServer(options =>
+			{
+				options.UserInteraction.LoginReturnUrlParameter = "/";
+			})
 				.AddInMemoryIdentityResources(Config.GetIdentityResources())
 				.AddInMemoryApiResources(Config.GetApis())
 				.AddInMemoryClients(Config.GetClients())
@@ -71,7 +80,7 @@ namespace IdentityVueTest
 
 			app.UseSpa(spa =>
 			{
-				spa.Options.SourcePath = "ClientApp";
+				spa.Options.SourcePath = "ClientApp/dist";
 
 				if (env.IsDevelopment())
 				{

@@ -116,7 +116,7 @@
 
 			const data = await Axios({
 				method: "post",
-				url:    "/login",
+				url:    "/api/v1/login",
 				data:   bodyFD,
 				config: { headers: { "Content-Type": "multipart/form-data" } },
 			} as AxiosRequestConfig);
