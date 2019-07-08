@@ -13,7 +13,7 @@ namespace IdentityVueTest
 {
 	public class Program
 	{
-		public static void Main(string[] args)
+		public static async Task Main(string[] args)
 		{
 			var seed = args.Any(x => x == "/initializeDb");
 			if (seed) args = args.Except(new[] { "/initializeDb" }).ToArray();
@@ -23,8 +23,8 @@ namespace IdentityVueTest
 			if (seed)
 			{
 				var config = host.Services.GetRequiredService<IConfiguration>();
-				var connectionString = config.GetConnectionString("DefaultConnection");
-				SeedData.EnsureSeedData(connectionString);
+				var connectionString = config.GetConnectionString("AspIdentityConnection");
+				await InitialUsers.InitializeDb(connectionString);
 				return;
 			}
 
