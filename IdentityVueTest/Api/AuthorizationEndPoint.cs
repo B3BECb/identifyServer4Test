@@ -17,9 +17,33 @@ namespace IdentityVueTest.Api
 {
 	public class AuthorizationData
 	{
-		public string Login { get; set; }
+		private string _login;
 
-		public string Password { get; set; }
+		private string _password;
+
+		public string Login
+		{
+			get => _login;
+			set
+			{
+				if (string.IsNullOrWhiteSpace(value))
+					_login = "";
+				else
+					_login = value;
+			}
+		}
+
+		public string Password
+		{
+			get => _password;
+			set
+			{
+				if (string.IsNullOrWhiteSpace(value))
+					_password = "";
+				else
+					_password = value;
+			}
+		}
 
 		public string ReturnUrl { get; set; }
 

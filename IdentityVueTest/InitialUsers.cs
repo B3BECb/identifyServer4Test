@@ -24,6 +24,16 @@ namespace IdentityVueTest
 				.AddEntityFrameworkStores<AspIdentityDbContext>()
 				.AddDefaultTokenProviders();
 
+			services.Configure<IdentityOptions>(options =>
+			{
+				options.Password.RequireDigit = false;
+				options.Password.RequireNonAlphanumeric = false;
+				options.Password.RequireUppercase = false;
+				options.Password.RequireLowercase = false;
+				options.Password.RequiredLength = 4;
+				options.Password.RequiredUniqueChars = 1;
+			});
+
 			using (var serviceProvider = services.BuildServiceProvider())
 			{
 				using (var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())

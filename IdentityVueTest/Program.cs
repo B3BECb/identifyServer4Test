@@ -15,12 +15,12 @@ namespace IdentityVueTest
 	{
 		public static async Task Main(string[] args)
 		{
-			var seed = args.Any(x => x == "/initializeDb");
-			if (seed) args = args.Except(new[] { "/initializeDb" }).ToArray();
+			var firstSturtup = args.Any(x => x == "/initializeDb");
+			if (firstSturtup) args = args.Except(new[] { "/initializeDb" }).ToArray();
 
 			var host = CreateWebHostBuilder(args).Build();
 
-			if (seed)
+			if (firstSturtup)
 			{
 				var config = host.Services.GetRequiredService<IConfiguration>();
 				var connectionString = config.GetConnectionString("AspIdentityConnection");

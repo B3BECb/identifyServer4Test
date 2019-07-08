@@ -56,6 +56,16 @@ namespace IdentityVueTest
 				options.SuppressXFrameOptionsHeader = false;
 			});
 
+			services.Configure<IdentityOptions>(options =>
+			{
+				options.Password.RequireDigit = false;
+				options.Password.RequireNonAlphanumeric = false;
+				options.Password.RequireUppercase = false;
+				options.Password.RequireLowercase = false;
+				options.Password.RequiredLength = 4;
+				options.Password.RequiredUniqueChars = 1;
+			});
+
 			var builder = services.AddIdentityServer(options =>
 			{
 				options.Events.RaiseErrorEvents = true;
