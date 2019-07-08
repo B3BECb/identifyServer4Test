@@ -1,10 +1,14 @@
+using IdentityVueTest.Data;
+using IdentityVueTest.Models;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -25,7 +29,20 @@ namespace IdentityVueTest
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			services.AddDbContext<AspIdentityDbContext>(options =>
+				options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+			services.AddIdentity<User, IdentityRole>()
+				.AddEntityFrameworkStores<AspIdentityDbContext>()
+				.AddDefaultTokenProviders();
+
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+			services.Configure<IISOptions>(iis =>
+			{
+				iis.AuthenticationDisplayName = "Windows";
+				iis.AutomaticAuthentication = false;
+			});
 
 			// In production, the React files will be served from this directory
 			services.AddSpaStaticFiles(configuration =>
@@ -41,7 +58,10 @@ namespace IdentityVueTest
 
 			var builder = services.AddIdentityServer(options =>
 			{
-				options.UserInteraction.LoginReturnUrlParameter = "/";
+				options.Events.RaiseErrorEvents = true;
+				options.Events.RaiseInformationEvents = true;
+				options.Events.RaiseFailureEvents = true;
+				options.Events.RaiseSuccessEvents = true;
 			})
 				.AddInMemoryIdentityResources(Config.GetIdentityResources())
 				.AddInMemoryApiResources(Config.GetApis())
@@ -60,6 +80,7 @@ namespace IdentityVueTest
 			if (env.IsDevelopment())
 			{
 				app.UseDeveloperExceptionPage();
+				app.UseDatabaseErrorPage();
 			}
 			else
 			{
@@ -82,7 +103,7 @@ namespace IdentityVueTest
 				return next(context);
 			});
 
-				app.UseMvc(routes =>
+			app.UseMvc(routes =>
 			{
 				routes.MapRoute(
 					name: "default",
