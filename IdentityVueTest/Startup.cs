@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -35,6 +36,7 @@ namespace IdentityVueTest
 			services.AddAntiforgery(options =>
 			{
 				options.HeaderName = "X-XSRF-TOKEN";
+				options.SuppressXFrameOptionsHeader = false;
 			});
 
 			var builder = services.AddIdentityServer(options =>
@@ -53,7 +55,7 @@ namespace IdentityVueTest
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+		public void Configure(IApplicationBuilder app, IHostingEnvironment env, IAntiforgery antiforgery)
 		{
 			if (env.IsDevelopment())
 			{
@@ -71,7 +73,16 @@ namespace IdentityVueTest
 			app.UseSpaStaticFiles();
 			app.UseIdentityServer();
 
-			app.UseMvc(routes =>
+			app.Use(next => context =>
+			{
+				var tokens = antiforgery.GetAndStoreTokens(context);
+				context.Response.Cookies.Append("X-XSRF-TOKEN", tokens.RequestToken,
+					new CookieOptions() { HttpOnly = false });
+
+				return next(context);
+			});
+
+				app.UseMvc(routes =>
 			{
 				routes.MapRoute(
 					name: "default",

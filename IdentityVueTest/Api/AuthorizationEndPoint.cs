@@ -9,15 +9,22 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityVueTest.Api
 {
+	public class AuthorizationData
+	{
+		public string Login { get; set; }
+
+		public string Password { get; set; }
+	}
+
 	[SecurityHeaders]
 	[AllowAnonymous]
 	[Route("api/v1/login")]
-	public class ValuesController : Controller
+	public class AuthorizationEndPoint : Controller
 	{
 		// POST api/<controller>
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public void Post([FromBody]string value)
+		public void Post([FromForm]AuthorizationData data)
 		{
 		}
 	}
