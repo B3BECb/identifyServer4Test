@@ -23,7 +23,7 @@ namespace IdentityVueTest.Api
 
 		public string ReturnUrl { get; set; }
 
-		public string RememberLogin { get; set; }
+		public bool RememberLogin { get; set; }
 	}
 
 	[SecurityHeaders]
@@ -65,46 +65,46 @@ namespace IdentityVueTest.Api
 		{
 			var context = await Interaction.GetAuthorizationContextAsync(model.ReturnUrl);
 
-			//if (ModelState.IsValid)
-			//{
-			//	var result = await SignInManager.PasswordSignInAsync(model.Login, model.Password, model.RememberLogin, lockoutOnFailure: true);
-			//	if (result.Succeeded)
-			//	{
-			//		var user = await UserManager.FindByNameAsync(model.Login);
-			//		await Events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName));
+			if (ModelState.IsValid)
+			{
+				var result = await SignInManager.PasswordSignInAsync(model.Login, model.Password, model.RememberLogin, lockoutOnFailure: true);
+				if (result.Succeeded)
+				{
+					var user = await UserManager.FindByNameAsync(model.Login);
+					await Events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName));
 
-			//		if (context != null)
-			//		{
-			//			if (await ClientStore.IsPkceClientAsync(context.ClientId))
-			//			{
-			//				// if the client is PKCE then we assume it's native, so this change in how to
-			//				// return the response is for better UX for the end user.
-			//				return View("Redirect", new RedirectViewModel { RedirectUrl = model.ReturnUrl });
-			//			}
+					if (context != null)
+					{
+						if (await ClientStore.IsPkceClientAsync(context.ClientId))
+						{
+							// if the client is PKCE then we assume it's native, so this change in how to
+							// return the response is for better UX for the end user.
+							return View("Redirect", new RedirectViewModel { RedirectUrl = model.ReturnUrl });
+						}
 
-			//			// we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
-			//			return Redirect(model.ReturnUrl);
-			//		}
+						// we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
+						return Redirect(model.ReturnUrl);
+					}
 
-			//		// request for a local page
-			//		if (Url.IsLocalUrl(model.ReturnUrl))
-			//		{
-			//			return Redirect(model.ReturnUrl);
-			//		}
-			//		else if (string.IsNullOrEmpty(model.ReturnUrl))
-			//		{
-			//			return Redirect("~/");
-			//		}
-			//		else
-			//		{
-			//			// user might have clicked on a malicious link - should be logged
-			//			throw new Exception("invalid return URL");
-			//		}
-			//	}
+					// request for a local page
+					if (Url.IsLocalUrl(model.ReturnUrl))
+					{
+						return Redirect(model.ReturnUrl);
+					}
+					else if (string.IsNullOrEmpty(model.ReturnUrl))
+					{
+						return Redirect("~/");
+					}
+					else
+					{
+						// user might have clicked on a malicious link - should be logged
+						throw new Exception("invalid return URL");
+					}
+				}
 
-			//	await Events.RaiseAsync(new UserLoginFailureEvent(model.Login, "invalid credentials"));
-			//	ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
-			//}
+				await Events.RaiseAsync(new UserLoginFailureEvent(model.Login, "invalid credentials"));
+				ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
+			}
 
 			return new NotFoundResult();
 		}
