@@ -8,33 +8,34 @@
 				<div class = "form">
 					<md-field :class = "getValidationClass('login')">
 						<label>{{$t('login')}}</label>
-						<md-input v-model = "login"
+						<md-input v-model = "Login"
 								  autocomplete = "name"
 						></md-input>
 						<span class = "md-error"
-							  v-if = "!$v.login.required">{{$t('loginError')}}</span>
+							  v-if = "!$v.Login.required">{{$t('loginError')}}</span>
 					</md-field>
 					<md-field :class = "getValidationClass('password')">
 						<label>{{$t('password')}}</label>
-						<md-input v-model = "password"
+						<md-input v-model = "Password"
 								  type = "password"
 								  autocomplete = "password"></md-input>
 						<span class = "md-error"
-							  v-if = "!$v.password.required">{{$t('passwordError')}}</span>
+							  v-if = "!$v.Password.required">{{$t('passwordError')}}</span>
 					</md-field>
+					<md-checkbox v-model = "RememberLogin">Remember me</md-checkbox>
 				</div>
 
 				<div class = "actions md-layout md-alignment-center-right">
 					<md-button type = "submit"
 							   class = "md-raised md-primary"
 							   v-on:click = "submit()"
-							   :disabled = "sending">
+							   :disabled = "Sending">
 						{{$t('singIn')}}
 					</md-button>
 				</div>
 
 				<div class = "loading-overlay"
-					 v-if = "sending">
+					 v-if = "Sending">
 					<md-progress-spinner md-mode = "indeterminate"
 										 :md-stroke = "2"></md-progress-spinner>
 				</div>
@@ -55,32 +56,46 @@
 		required,
 	} from "vuelidate/lib/validators";
 	import { Component, Vue } from "vue-property-decorator";
+	import {
+		MdButton,
+		MdContent,
+		MdCard,
+		MdProgress,
+		MdField,
+		MdCheckbox,
 	// @ts-ignore
-	import { MdButton, MdContent, MdCard, MdProgress, MdField } from "vue-material/dist/components";
+	} from "vue-material/dist/components";
 	import Axios from "axios";
-	import {AxiosRequestConfig} from "axios";
+	import { AxiosRequestConfig } from "axios";
 
 	Vue.use(MdButton);
 	Vue.use(MdContent);
 	Vue.use(MdCard);
 	Vue.use(MdProgress);
 	Vue.use(MdField);
+	Vue.use(MdCheckbox);
+
+	interface IRedirectedUrl
+	{
+		ReturnUrl: string | null;
+	}
 
 	@Component({
 		mixins:      [validationMixin],
 		validations: {
-			login:    {
+			Login:    {
 				required,
 			},
-			password: {},
+			Password: {},
 		},
 	})
 	export default class Login
 		extends Vue
 	{
-		public login: string    = "";
-		public password: string = "";
-		public sending: boolean = false;
+		public Login: string          = "";
+		public Password: string       = "";
+		public RememberLogin: boolean = false;
+		public Sending: boolean       = false;
 
 		public getValidationClass(fieldName: string)
 		{
@@ -103,9 +118,12 @@
 			}
 
 			const bodyFD = new FormData();
+			const returnUrl = (this.$route.query as any).ReturnUrl || "";
 
-			bodyFD.set("login", this.login);
-			bodyFD.set("password", this.password);
+			bodyFD.set("login", this.Login);
+			bodyFD.set("password", this.Password);
+			bodyFD.set("returnUrl", returnUrl.toString());
+			bodyFD.set("rememberLogin", this.RememberLogin.toString());
 
 			// Axios.request({
 			// 	method: 'post',

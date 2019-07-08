@@ -97,7 +97,7 @@ namespace IdentityVueTest
 			app.Use(next => context =>
 			{
 				var tokens = antiforgery.GetAndStoreTokens(context);
-				context.Response.Cookies.Append("X-XSRF-TOKEN", tokens.RequestToken,
+				context.Response.Cookies.Append("XSRF-TOKEN", tokens.RequestToken,
 					new CookieOptions() { HttpOnly = false });
 
 				return next(context);
