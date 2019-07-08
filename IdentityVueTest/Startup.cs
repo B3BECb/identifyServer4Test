@@ -30,7 +30,7 @@ namespace IdentityVueTest
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddDbContext<AspIdentityDbContext>(options =>
-				options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+				options.UseSqlServer(Configuration.GetConnectionString("AspIdentityConnection")));
 
 			services.AddIdentity<User, IdentityRole>()
 				.AddEntityFrameworkStores<AspIdentityDbContext>()
