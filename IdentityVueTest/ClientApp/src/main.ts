@@ -7,9 +7,11 @@ import i18n from "./i18n";
 import "reset.css";
 import "typeface-roboto";
 import Vuelidate from "vuelidate";
+import VueCookies from "vue-cookies";
 
 Vue.config.productionTip = false;
 Vue.use(Vuelidate);
+Vue.use(VueCookies);
 
 new Vue({
   router,

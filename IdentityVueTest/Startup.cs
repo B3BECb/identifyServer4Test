@@ -52,6 +52,7 @@ namespace IdentityVueTest
 
 			services.AddAntiforgery(options =>
 			{
+				options.FormFieldName = "XSRF-TOKEN-FIELD";
 				options.HeaderName = "X-XSRF-TOKEN";
 				options.SuppressXFrameOptionsHeader = false;
 			});

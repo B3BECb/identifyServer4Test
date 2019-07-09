@@ -2,43 +2,56 @@
 	<div class = "view-container">
 		<div class = "centered-container">
 			<md-content class = "md-elevation-3">
-				<div class = "title">
-					<div class = "md-title">Mallenom systems</div>
-				</div>
-				<div class = "form">
-					<md-field :class = "getValidationClass('login')">
-						<label>{{$t('login')}}</label>
-						<md-input v-model = "Login"
-								  autocomplete = "name"
-						></md-input>
-						<span class = "md-error"
-							  v-if = "!$v.Login.required">{{$t('loginError')}}</span>
+				<form v-on:submit = "submit()"
+					  method = "post"
+					  action = "/api/v1/authorization/login">
+					<div class = "title">
+						<div class = "md-title">Mallenom systems</div>
+					</div>
+					<md-field style = "display: none;">
+						<md-input v-model = "XSRF"
+								  name = "XSRF-TOKEN-FIELD"></md-input>
 					</md-field>
-					<md-field :class = "getValidationClass('password')">
-						<label>{{$t('password')}}</label>
-						<md-input v-model = "Password"
-								  type = "password"
-								  autocomplete = "password"></md-input>
-						<span class = "md-error"
-							  v-if = "!$v.Password.required">{{$t('passwordError')}}</span>
+					<md-field style = "display: none;">
+						<md-input v-model = "ReturnUrl"
+								  name = "returnUrl"></md-input>
 					</md-field>
-					<md-checkbox v-model = "RememberLogin">Remember me</md-checkbox>
-				</div>
+					<div class = "form">
+						<md-field :class = "getValidationClass('login')">
+							<label>{{$t('login')}}</label>
+							<md-input v-model = "Login"
+									  autocomplete = "name"
+									  name="login"
+							></md-input>
+							<span class = "md-error"
+								  v-if = "!$v.Login.required">{{$t('loginError')}}</span>
+						</md-field>
+						<md-field :class = "getValidationClass('password')">
+							<label>{{$t('password')}}</label>
+							<md-input v-model = "Password"
+									  type = "password"
+									  name = "password"
+									  autocomplete = "password"></md-input>
+							<span class = "md-error"
+								  v-if = "!$v.Password.required">{{$t('passwordError')}}</span>
+						</md-field>
+						<md-checkbox v-model = "RememberLogin">Remember me</md-checkbox>
+					</div>
 
-				<div class = "actions md-layout md-alignment-center-right">
-					<md-button type = "submit"
-							   class = "md-raised md-primary"
-							   v-on:click = "submit()"
-							   :disabled = "Sending">
-						{{$t('singIn')}}
-					</md-button>
-				</div>
+					<div class = "actions md-layout md-alignment-center-right">
+						<md-button type = "submit"
+								   class = "md-raised md-primary"
+								   :disabled = "Sending">
+							{{$t('singIn')}}
+						</md-button>
+					</div>
 
-				<div class = "loading-overlay"
-					 v-if = "Sending">
-					<md-progress-spinner md-mode = "indeterminate"
-										 :md-stroke = "2"></md-progress-spinner>
-				</div>
+					<div class = "loading-overlay"
+						 v-if = "Sending">
+						<md-progress-spinner md-mode = "indeterminate"
+											 :md-stroke = "2"></md-progress-spinner>
+					</div>
+				</form>
 			</md-content>
 		</div>
 		<div class = "langs">
@@ -65,8 +78,6 @@
 		MdCheckbox,
 		// @ts-ignore
 	} from "vue-material/dist/components";
-	import Axios from "axios";
-	import { AxiosRequestConfig } from "axios";
 
 	Vue.use(MdButton);
 	Vue.use(MdContent);
@@ -74,11 +85,6 @@
 	Vue.use(MdProgress);
 	Vue.use(MdField);
 	Vue.use(MdCheckbox);
-
-	interface IRedirectedUrl
-	{
-		ReturnUrl: string | null;
-	}
 
 	@Component({
 		mixins:      [validationMixin],
@@ -94,6 +100,8 @@
 	{
 		public Login: string          = "";
 		public Password: string       = "";
+		public ReturnUrl: string      = "";
+		public XSRF: string           = "";
 		public RememberLogin: boolean = false;
 		public Sending: boolean       = false;
 
@@ -119,51 +127,9 @@
 
 			this.Sending = true;
 
-			const bodyFD    = new FormData();
-			const returnUrl = (this.$route.query as any).ReturnUrl || "";
+			this.ReturnUrl = (this.$route.query as any).ReturnUrl || "";
 
-			bodyFD.set("login", this.Login);
-			bodyFD.set("password", this.Password);
-			bodyFD.set("returnUrl", returnUrl.toString());
-			bodyFD.set("rememberLogin", this.RememberLogin.toString());
-
-			try
-			{
-				Axios.interceptors.response.use((response) =>
-				{
-					console.log(response);
-					return response;
-				}, (error) =>
-				{
-					console.log(error);
-					if(error.response && error.response.data && error.response.data.location)
-					{
-						this.$router.push(error.response.data.location);
-					}
-					else
-					{
-						return Promise.reject(error);
-					}
-				});
-
-				const data = await Axios({
-					method: "post",
-					url:    "/api/v1/authorization/login",
-					data:   bodyFD,
-					config: {
-						headers:      { "Content-Type": "multipart/form-data" },
-						maxRedirects: 0,
-					},
-				} as AxiosRequestConfig);
-
-				console.log(data);
-			}
-			catch(exc)
-			{
-				console.warn("Unable to sing in.", exc);
-			}
-
-			this.Sending = false;
+			this.XSRF = this.$cookies.get("XSRF-TOKEN");
 		}
 	}
 </script>
