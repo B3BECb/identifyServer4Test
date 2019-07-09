@@ -94,9 +94,13 @@ namespace IdentityVueTest.Api
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Post([FromForm]AuthorizationData model)
+		public async Task<IActionResult> Post(AuthorizationData model)
 		{
 			var context = await Interaction.GetAuthorizationContextAsync(model.ReturnUrl);
+
+			var returnUrl = !string.IsNullOrWhiteSpace(model.ReturnUrl)
+				? "?ReturnUrl=" + model.ReturnUrl
+				: "";
 
 			if (ModelState.IsValid)
 			{
@@ -108,14 +112,6 @@ namespace IdentityVueTest.Api
 
 					if (context != null)
 					{
-						if (await ClientStore.IsPkceClientAsync(context.ClientId))
-						{
-							// if the client is PKCE then we assume it's native, so this change in how to
-							// return the response is for better UX for the end user.
-							return View("Redirect", new RedirectViewModel { RedirectUrl = model.ReturnUrl });
-						}
-
-						// we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
 						return Redirect(model.ReturnUrl);
 					}
 
@@ -138,10 +134,6 @@ namespace IdentityVueTest.Api
 				await Events.RaiseAsync(new UserLoginFailureEvent(model.Login, "invalid credentials"));
 				ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
 			}
-
-			var returnUrl = !string.IsNullOrWhiteSpace(model.ReturnUrl)
-				? "?ReturnUrl=" + model.ReturnUrl
-				: "";
 
 			return Redirect("~/account/login" + returnUrl);
 		}
