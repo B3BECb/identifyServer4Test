@@ -117,7 +117,7 @@
 			}
 		}
 
-		public async submit(e)
+		public async submit(e: Event)
 		{
 			console.log(123);
 			this.$v.$touch();

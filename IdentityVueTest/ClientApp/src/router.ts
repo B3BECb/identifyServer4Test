@@ -13,13 +13,22 @@ const router = new Router({
 			redirect: `/${I18n.default.locale}`,
 		},
 		{
-			path: "/Account/Login",
-			redirect: `/${I18n.default.locale}/Account/Login`,
+			path: "/account/login",
+			redirect: `/${I18n.default.locale}/account/login`,
 		},
 		{
-			path: "/:locale/Account/Login",
+			path: "/:locale/account/login",
 			name:      "login",
 			component: () => import(/* webpackChunkName: "login" */ "./views/Login.vue"),
+		},
+		{
+			path: "/grants",
+			redirect: `/${I18n.default.locale}/grants`,
+		},
+		{
+			path: "/:locale/grants",
+			name:      "grants",
+			component: () => import(/* webpackChunkName: "grants" */ "./views/Grants.vue"),
 		},
 		// {
 		// 	path: "/:locale",
