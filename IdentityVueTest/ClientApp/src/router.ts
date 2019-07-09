@@ -30,6 +30,15 @@ const router = new Router({
 			name:      "grants",
 			component: () => import(/* webpackChunkName: "grants" */ "./views/Grants.vue"),
 		},
+		{
+			path: "/consent",
+			redirect: `/${I18n.default.locale}/consent`,
+		},
+		{
+			path: "/:locale/consent",
+			name:      "consent",
+			component: () => import(/* webpackChunkName: "consent" */ "./views/Consent.vue"),
+		},
 		// {
 		// 	path: "/:locale",
 		// 	name:      "home",
