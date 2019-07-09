@@ -11,8 +11,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace IdentityVueTest.Api
 {
 	public class AuthorizationData
@@ -20,6 +18,8 @@ namespace IdentityVueTest.Api
 		private string _login;
 
 		private string _password;
+
+		private string _returnUrl;
 
 		public string Login
 		{
@@ -45,7 +45,17 @@ namespace IdentityVueTest.Api
 			}
 		}
 
-		public string ReturnUrl { get; set; }
+		public string ReturnUrl
+		{
+			get => _returnUrl;
+			set
+			{
+				if (string.IsNullOrWhiteSpace(value))
+					_returnUrl = "";
+				else
+					_returnUrl = value;
+			}
+		}
 
 		public bool RememberLogin { get; set; }
 	}
@@ -82,7 +92,6 @@ namespace IdentityVueTest.Api
 			Events = events;
 		}
 
-		// POST api/<controller>
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Post([FromForm]AuthorizationData model)
@@ -130,7 +139,11 @@ namespace IdentityVueTest.Api
 				ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
 			}
 
-			return new UnauthorizedResult();
+			var returnUrl = !string.IsNullOrWhiteSpace(model.ReturnUrl)
+				? "?ReturnUrl=" + model.ReturnUrl
+				: "";
+
+			return Redirect("~/account/login" + returnUrl);
 		}
 	}
 }
