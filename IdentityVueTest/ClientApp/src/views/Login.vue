@@ -2,7 +2,7 @@
 	<div class = "view-container">
 		<div class = "centered-container">
 			<md-content class = "md-elevation-3">
-				<form v-on:submit = "submit()"
+				<form @submit = "submit"
 					  method = "post"
 					  action = "/api/v1/authorization/login">
 					<div class = "title">
@@ -17,7 +17,7 @@
 								  name = "returnUrl"></md-input>
 					</md-field>
 					<div class = "form">
-						<md-field :class = "getValidationClass('login')">
+						<md-field :class = "getValidationClass('Login')">
 							<label>{{$t('login')}}</label>
 							<md-input v-model = "Login"
 									  autocomplete = "name"
@@ -26,7 +26,7 @@
 							<span class = "md-error"
 								  v-if = "!$v.Login.required">{{$t('loginError')}}</span>
 						</md-field>
-						<md-field :class = "getValidationClass('password')">
+						<md-field :class = "getValidationClass('Password')">
 							<label>{{$t('password')}}</label>
 							<md-input v-model = "Password"
 									  type = "password"
@@ -117,12 +117,14 @@
 			}
 		}
 
-		public async submit()
+		public async submit(e)
 		{
+			console.log(123);
 			this.$v.$touch();
 			if(this.$v.$invalid)
 			{
-				return;
+				e.preventDefault();
+				return false;
 			}
 
 			this.Sending = true;
@@ -130,6 +132,8 @@
 			this.ReturnUrl = (this.$route.query as any).ReturnUrl || "";
 
 			this.XSRF = this.$cookies.get("XSRF-TOKEN");
+
+			return true;
 		}
 	}
 </script>
