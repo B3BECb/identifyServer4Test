@@ -130,7 +130,7 @@ namespace IdentityVueTest.Api
 				ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
 			}
 
-			return new NotFoundResult();
+			return new UnauthorizedResult();
 		}
 	}
 }

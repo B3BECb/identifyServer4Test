@@ -63,7 +63,7 @@
 		MdProgress,
 		MdField,
 		MdCheckbox,
-	// @ts-ignore
+		// @ts-ignore
 	} from "vue-material/dist/components";
 	import Axios from "axios";
 	import { AxiosRequestConfig } from "axios";
@@ -117,7 +117,9 @@
 				return;
 			}
 
-			const bodyFD = new FormData();
+			this.Sending = true;
+
+			const bodyFD    = new FormData();
 			const returnUrl = (this.$route.query as any).ReturnUrl || "";
 
 			bodyFD.set("login", this.Login);
@@ -125,14 +127,43 @@
 			bodyFD.set("returnUrl", returnUrl.toString());
 			bodyFD.set("rememberLogin", this.RememberLogin.toString());
 
-			const data = await Axios({
-				method: "post",
-				url:    "/api/v1/authorization/login",
-				data:   bodyFD,
-				config: { headers: { "Content-Type": "multipart/form-data" } },
-			} as AxiosRequestConfig);
+			try
+			{
+				Axios.interceptors.response.use((response) =>
+				{
+					console.log(response);
+					return response;
+				}, (error) =>
+				{
+					console.log(error);
+					if(error.response && error.response.data && error.response.data.location)
+					{
+						this.$router.push(error.response.data.location);
+					}
+					else
+					{
+						return Promise.reject(error);
+					}
+				});
 
-			console.log(data);
+				const data = await Axios({
+					method: "post",
+					url:    "/api/v1/authorization/login",
+					data:   bodyFD,
+					config: {
+						headers:      { "Content-Type": "multipart/form-data" },
+						maxRedirects: 0,
+					},
+				} as AxiosRequestConfig);
+
+				console.log(data);
+			}
+			catch(exc)
+			{
+				console.warn("Unable to sing in.", exc);
+			}
+
+			this.Sending = false;
 		}
 	}
 </script>
