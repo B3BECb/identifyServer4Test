@@ -76,7 +76,7 @@ namespace IdentityVueTest
 				.AddInMemoryIdentityResources(Config.GetIdentityResources())
 				.AddInMemoryApiResources(Config.GetApis())
 				.AddInMemoryClients(Config.GetClients())
-				.AddTestUsers(Config.GetUsers());
+				.AddAspNetIdentity<User>();
 
 			if (Environment.IsDevelopment())
 			{

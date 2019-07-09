@@ -52,7 +52,7 @@ namespace IdentityVueTest.Api
 
 	[SecurityHeaders]
 	[AllowAnonymous]
-	[Route("api/v1/login")]
+	[Route("api/v1/authorization/login")]
 	public class AuthorizationEndPoint : Controller
 	{
 		private UserManager<User> UserManager { get; set; }

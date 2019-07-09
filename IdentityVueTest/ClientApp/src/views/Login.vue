@@ -125,16 +125,9 @@
 			bodyFD.set("returnUrl", returnUrl.toString());
 			bodyFD.set("rememberLogin", this.RememberLogin.toString());
 
-			// Axios.request({
-			// 	method: 'post',
-			// 	url:    '/login',
-			// 	data:   bodyFD,
-			// 	config: { headers: { 'Content-Type': 'multipart/form-data' } },
-			// } as AxiosRequestConfig)
-
 			const data = await Axios({
 				method: "post",
-				url:    "/api/v1/login",
+				url:    "/api/v1/authorization/login",
 				data:   bodyFD,
 				config: { headers: { "Content-Type": "multipart/form-data" } },
 			} as AxiosRequestConfig);
