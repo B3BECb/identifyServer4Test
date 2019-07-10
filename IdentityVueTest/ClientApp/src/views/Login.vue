@@ -72,7 +72,6 @@
 	import {
 		MdButton,
 		MdContent,
-		MdCard,
 		MdProgress,
 		MdField,
 		MdCheckbox,
@@ -81,7 +80,6 @@
 
 	Vue.use(MdButton);
 	Vue.use(MdContent);
-	Vue.use(MdCard);
 	Vue.use(MdProgress);
 	Vue.use(MdField);
 	Vue.use(MdCheckbox);
@@ -119,7 +117,6 @@
 
 		public async submit(e: Event)
 		{
-			console.log(123);
 			this.$v.$touch();
 			if(this.$v.$invalid)
 			{

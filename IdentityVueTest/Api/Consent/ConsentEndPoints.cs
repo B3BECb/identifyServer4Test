@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace IdentityVueTest.Api
 {
+	[SecurityHeaders]
+	[Authorize]
+	[Route("api/v1/consent")]
 	public class ConsentEndPoints : Controller
 	{
 		private readonly IIdentityServerInteractionService _interaction;
@@ -39,10 +42,10 @@ namespace IdentityVueTest.Api
 			var vm = await BuildViewModelAsync(returnUrl);
 			if (vm != null)
 			{
-				return View("Index", vm);
+				return new JsonResult(vm);
 			}
 
-			return View("Error");
+			return new UnauthorizedResult();
 		}
 
 		[HttpPost]

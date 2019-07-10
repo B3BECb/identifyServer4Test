@@ -10,7 +10,7 @@
 		extends Vue
 	{
 
-	};
+	}
 </script>
 
 <style scoped>
