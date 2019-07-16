@@ -1,7 +1,7 @@
 <template>
-	<div>
+	<div class="md-elevation-3 md-layout md-gutter">
 		<md-content v-if = "Model"
-					class = "md-elevation-3">
+					class = "md-layout-item">
 			<div class = "title">
 				<div v-if = "Model.ClientLogoUrl"
 					 class = "logo"><img v-bind:src = "Model.ClientLogoUrl"></div>
@@ -126,7 +126,8 @@
 			</div>
 
 		</md-content>
-		<md-content v-else>
+		<md-content v-else
+					class = "md-layout-item">
 			Something went wrong
 		</md-content>
 	</div>

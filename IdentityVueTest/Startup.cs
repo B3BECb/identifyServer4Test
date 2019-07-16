@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using VueCliMiddleware;
 
 namespace IdentityVueTest
 {
@@ -127,7 +128,7 @@ namespace IdentityVueTest
 
 				if (env.IsDevelopment())
 				{
-					//spa.UseVueCli(npmScript: "serve");
+					spa.UseVueCli(npmScript: "serve");
 				}
 			});
 		}
