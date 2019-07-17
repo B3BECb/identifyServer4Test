@@ -1,7 +1,114 @@
 <template>
-	<div class="md-elevation-3 md-layout md-gutter">
-		<md-content v-if = "Model"
-					class = "md-layout-item">
+	<form class = "md-layout"
+		  @submit = "submit"
+		  action = "/api/v1/consent"
+		  method = "post">
+		<md-card class = "md-layout-item md-size-50 md-small-size-100"
+				 v-if = "Model">
+			<md-card-header>
+				<div>
+					<div class = "name md-title">{{Model.ClientName}}</div>
+					<div class="md-subheading">is requesting your permission</div>
+				</div>
+			</md-card-header>
+			<md-card-content>
+				<div class = "md-layout md-gutter content">
+					<div class = "md-layout-item md-small-size-100">
+						<input type = "hidden"
+							   v-model = "XSRF"
+							   name = "XSRF-TOKEN-FIELD" />
+					</div>
+					<div class = "md-layout-item md-small-size-100">
+						<input type = "hidden"
+							   v-model = "ReturnUrl"
+							   name = "returnUrl" />
+					</div>
+					<div class = "md-layout-item md-small-size-100"
+						 v-if = "Model.IdentityScopes.length">
+						<div class = "panel-heading">
+							<md-icon class = "icon">account_circle</md-icon>
+							Personal Information
+						</div>
+						<ul class = "list-group">
+							<li v-for = "scope in Model.IdentityScopes"
+								class = "list-group-item">
+								<label>
+									<input class = "consent-scopecheck"
+										   type = "checkbox"
+										   name = "ScopesConsented"
+										   v-bind:id = "'scopes_' + scope.Name"
+										   v-bind:value = "scope.Name"
+										   v-bind:checked = "scope.Checked"
+										   v-bind:disabled = "scope.Required" />
+									<input v-if = "scope.Required"
+										   type = "hidden"
+										   name = "ScopesConsented"
+										   v-bind:value = "scope.Name" />
+									<strong>{{scope.DisplayName}}</strong>
+									<md-icon class = "icon"
+											 v-if = "scope.Emphasize">error
+									</md-icon>
+								</label>
+								<span v-if = "scope.Required"><em>(required)</em></span>
+								<div v-if = "scope.Description"
+									 class = "consent-description">
+									<label v-bind:for = "'scopes' + scope.Name">{{scope.Description}}</label>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div class = "md-layout-item md-small-size-100"
+						 v-if = "Model.ResourceScopes.length">
+						<div class = "panel-heading">
+							<md-icon class = "icon">list</md-icon>
+							Application Access
+						</div>
+						<ul class = "list-group">
+							<li v-for = "scope in Model.ResourceScopes"
+								class = "list-group-item">
+								<label>
+									<input class = "consent-scopecheck"
+										   type = "checkbox"
+										   name = "ScopesConsented"
+										   v-bind:id = "'scopes_' + scope.Name"
+										   v-bind:value = "scope.Name"
+										   v-bind:checked = "scope.Checked"
+										   v-bind:disabled = "scope.Required" />
+									<input v-if = "scope.Required"
+										   type = "hidden"
+										   name = "ScopesConsented"
+										   v-bind:value = "scope.Name" />
+									<strong>{{scope.DisplayName}}</strong>
+									<span v-if = "scope.Emphasize"
+										  class = "glyphicon glyphicon-exclamation-sign"></span>
+								</label>
+								<span v-if = "scope.Required"><em>(required)</em></span>
+								<div v-if = "scope.Description"
+									 class = "consent-description">
+									<label v-bind:for = "'scopes' + scope.Name">{{scope.Description}}</label>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</md-card-content>
+			<md-card-actions>
+				<md-button name = "button"
+						   value = "yes"
+						   type = "submit"
+						   class = "md-raised md-primary"
+						   autofocus>Allow
+				</md-button>
+				<md-button name = "button"
+						   value = "no"
+						   type = "submit"
+						   class = "md-dense md-primary"
+						   autofocus>Cancel
+				</md-button>
+			</md-card-actions>
+		</md-card>
+		<!--<md-content v-if = "Model"
+					class = "md-layout-item md-elevation-3 md-size-50">
 			<div class = "title">
 				<div v-if = "Model.ClientLogoUrl"
 					 class = "logo"><img v-bind:src = "Model.ClientLogoUrl"></div>
@@ -129,8 +236,8 @@
 		<md-content v-else
 					class = "md-layout-item">
 			Something went wrong
-		</md-content>
-	</div>
+		</md-content>-->
+	</form>
 </template>
 
 <script lang = "ts">
@@ -140,9 +247,11 @@
 	import {
 		MdButton,
 		MdContent,
+		MdCard,
 		MdProgress,
 		MdField,
 		MdCheckbox,
+		MdIcon,
 		// @ts-ignore
 	} from "vue-material/dist/components";
 
@@ -190,9 +299,11 @@
 
 	Vue.use(MdButton);
 	Vue.use(MdContent);
+	Vue.use(MdCard);
 	Vue.use(MdProgress);
 	Vue.use(MdField);
 	Vue.use(MdCheckbox);
+	Vue.use(MdIcon);
 
 	@Component
 	export default class Consent
@@ -254,20 +365,33 @@
 
 <style scoped
 	   lang = "scss">
-	.title {
+
+	@import '~material-icons-font/sass/variables';
+	@import '~material-icons-font/sass/mixins';
+
+	$MaterialIcons_FontPath: "~material-icons-font/fonts";
+	@import '~material-icons-font/sass/main';
+	@import '~material-icons-font/sass/Regular';
+	@import '~material-icons-font/sass/sizing';
+	@import '~material-icons-font/sass/coloring';
+
+	.icon {
+		font-family: "Material Icons", sans-serif !important;
+	}
+
+	.appInfo {
 		display: flex;
 		flex-direction: row;
+		align-items: baseline;
 
-		.appInfo {
-			display: flex;
-			flex-direction: row;
-			align-items: baseline;
-
-			.name {
-				font-size: 2em;
-				font-weight: bold;
-				margin-right: 8px;
-			}
+		.name {
+			font-size: 2em;
+			font-weight: bold;
+			margin-right: 8px;
 		}
+	}
+
+	.content {
+		flex-direction: column;
 	}
 </style>
