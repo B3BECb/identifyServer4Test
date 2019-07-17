@@ -3,16 +3,16 @@
 		  @submit = "submit"
 		  action = "/api/v1/consent"
 		  method = "post">
-		<md-card class = "md-layout-item md-size-50 md-small-size-100"
+		<md-card class = "md-layout-item md-size-60 md-small-size-100"
 				 v-if = "Model">
 			<md-card-header>
 				<div>
-					<div class = "name md-title">{{Model.ClientName}}</div>
-					<div class="md-subheading">is requesting your permission</div>
+					<span class = "name md-title">{{Model.ClientName}}</span>
+					<span class = "md-subheading"> is requesting your permission</span>
 				</div>
 			</md-card-header>
 			<md-card-content>
-				<div class = "md-layout md-gutter content">
+				<div class = "md-layout md-gutter md-alignment-center-left">
 					<div class = "md-layout-item md-small-size-100">
 						<input type = "hidden"
 							   v-model = "XSRF"
@@ -25,70 +25,74 @@
 					</div>
 					<div class = "md-layout-item md-small-size-100"
 						 v-if = "Model.IdentityScopes.length">
-						<div class = "panel-heading">
-							<md-icon class = "icon">account_circle</md-icon>
-							Personal Information
-						</div>
-						<ul class = "list-group">
-							<li v-for = "scope in Model.IdentityScopes"
-								class = "list-group-item">
-								<label>
-									<input class = "consent-scopecheck"
-										   type = "checkbox"
-										   name = "ScopesConsented"
-										   v-bind:id = "'scopes_' + scope.Name"
-										   v-bind:value = "scope.Name"
-										   v-bind:checked = "scope.Checked"
-										   v-bind:disabled = "scope.Required" />
-									<input v-if = "scope.Required"
-										   type = "hidden"
-										   name = "ScopesConsented"
-										   v-bind:value = "scope.Name" />
-									<strong>{{scope.DisplayName}}</strong>
-									<md-icon class = "icon"
-											 v-if = "scope.Emphasize">error
-									</md-icon>
-								</label>
-								<span v-if = "scope.Required"><em>(required)</em></span>
-								<div v-if = "scope.Description"
-									 class = "consent-description">
-									<label v-bind:for = "'scopes' + scope.Name">{{scope.Description}}</label>
-								</div>
-							</li>
-						</ul>
-					</div>
-					<div class = "md-layout-item md-small-size-100"
-						 v-if = "Model.ResourceScopes.length">
-						<div class = "panel-heading">
-							<md-icon class = "icon">list</md-icon>
-							Application Access
-						</div>
-						<ul class = "list-group">
-							<li v-for = "scope in Model.ResourceScopes"
-								class = "list-group-item">
-								<label>
-									<input class = "consent-scopecheck"
-										   type = "checkbox"
-										   name = "ScopesConsented"
-										   v-bind:id = "'scopes_' + scope.Name"
-										   v-bind:value = "scope.Name"
-										   v-bind:checked = "scope.Checked"
-										   v-bind:disabled = "scope.Required" />
-									<input v-if = "scope.Required"
-										   type = "hidden"
-										   name = "ScopesConsented"
-										   v-bind:value = "scope.Name" />
-									<strong>{{scope.DisplayName}}</strong>
-									<span v-if = "scope.Emphasize"
-										  class = "glyphicon glyphicon-exclamation-sign"></span>
-								</label>
-								<span v-if = "scope.Required"><em>(required)</em></span>
-								<div v-if = "scope.Description"
-									 class = "consent-description">
-									<label v-bind:for = "'scopes' + scope.Name">{{scope.Description}}</label>
-								</div>
-							</li>
-						</ul>
+
+						<md-list>
+							<md-subheader class="md-layout md-alignment-center-left">
+								<!--<span class="md-layout-item">-->
+									<!--<md-icon class = "icon">account_circle</md-icon>-->
+								<!--</span>-->
+								<span class="md-layout-item">Personal Information</span>
+							</md-subheader>
+							<md-list-item v-for = "scope in Model.IdentityScopes">
+								<md-checkbox name = "ScopesConsented"
+											 v-bind:id = "'scopes_' + scope.Name"
+											 v-bind:value = "scope.Name"
+											 v-bind:checked = "scope.Checked"
+											 v-bind:disabled = "scope.Required" />
+								<span class = "md-list-item-text">
+									<span>
+										<span>
+											<span>{{scope.DisplayName}}</span>
+											<span v-if = "scope.Required"
+												  class="md-caption"><em> (required)</em></span>
+										</span>
+									</span>
+									<span v-if = "scope.Description"
+										 class = "md-caption">
+										<label v-bind:for = "'scopes' + scope.Name">{{scope.Description}}</label>
+									</span>
+								</span>
+								<md-icon v-if = "scope.Emphasize">error</md-icon>
+								<input v-if = "scope.Required"
+									   type = "hidden"
+									   name = "ScopesConsented"
+									   v-bind:value = "scope.Name" />
+							</md-list-item>
+							<md-divider v-if = "Model.ResourceScopes.length"></md-divider>
+							<md-subheader class="md-layout md-alignment-center-left"
+										  v-if = "Model.ResourceScopes.length">
+								<!--<span class="md-layout-item">-->
+								<!--<md-icon class = "icon">account_circle</md-icon>-->
+								<!--</span>-->
+								<span class="md-layout-item">Application Access</span>
+							</md-subheader>
+							<md-list-item v-if = "Model.ResourceScopes.length"
+										  v-for = "scope in Model.ResourceScopes">
+								<md-checkbox name = "ScopesConsented"
+										v-bind:id = "'scopes_' + scope.Name"
+										v-bind:value = "scope.Name"
+										v-bind:checked = "scope.Checked"
+										v-bind:disabled = "scope.Required" />
+								<span class = "md-list-item-text">
+									<span>
+										<span>
+											<span>{{scope.DisplayName}}</span>
+											<span v-if = "scope.Required"
+												  class="md-caption"><em> (required)</em></span>
+										</span>
+									</span>
+									<span v-if = "scope.Description"
+										  class = "md-caption">
+										<label v-bind:for = "'scopes' + scope.Name">{{scope.Description}}</label>
+									</span>
+								</span>
+								<md-icon v-if = "scope.Emphasize">error</md-icon>
+								<input v-if = "scope.Required"
+									   type = "hidden"
+									   name = "ScopesConsented"
+									   v-bind:value = "scope.Name" />
+							</md-list-item>
+						</md-list>
 					</div>
 				</div>
 			</md-card-content>
@@ -252,6 +256,9 @@
 		MdField,
 		MdCheckbox,
 		MdIcon,
+		MdList,
+		MdSubheader,
+		MdDivider,
 		// @ts-ignore
 	} from "vue-material/dist/components";
 
@@ -304,6 +311,9 @@
 	Vue.use(MdField);
 	Vue.use(MdCheckbox);
 	Vue.use(MdIcon);
+	Vue.use(MdList);
+	Vue.use(MdSubheader);
+	Vue.use(MdDivider);
 
 	@Component
 	export default class Consent
@@ -375,23 +385,21 @@
 	@import '~material-icons-font/sass/sizing';
 	@import '~material-icons-font/sass/coloring';
 
-	.icon {
-		font-family: "Material Icons", sans-serif !important;
-	}
-
-	.appInfo {
-		display: flex;
-		flex-direction: row;
-		align-items: baseline;
-
-		.name {
-			font-size: 2em;
-			font-weight: bold;
-			margin-right: 8px;
+	.icon
+	{
+		&.emphasize
+		{
+			width: 24px !important;
+			margin-left: 8px;
 		}
 	}
 
-	.content {
-		flex-direction: column;
+	.consent
+	{
+		&.displayName
+		{
+			display: flex;
+
+		}
 	}
 </style>
