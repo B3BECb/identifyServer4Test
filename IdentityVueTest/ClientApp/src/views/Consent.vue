@@ -36,7 +36,6 @@
 							<md-list-item v-for = "scope in Model.IdentityScopes">
 								<md-checkbox name = "ScopesConsented"
 											 v-bind:id = "'scopes_' + scope.Name"
-											 v-bind:value = "scope.Name"
 											 v-model = "scope.Checked"
 											 v-bind:disabled = "scope.Required" />
 								<span class = "md-list-item-text">
@@ -53,10 +52,14 @@
 									</span>
 								</span>
 								<md-icon v-if = "scope.Emphasize">error</md-icon>
-								<input v-if = "scope.Required"
+								<!--<input v-if = "scope.Required"
 									   type = "hidden"
 									   name = "ScopesConsented"
-									   v-bind:value = "scope.Name" />
+									   v-bind:value = "scope.Name" />-->
+								<input type="hidden"
+									   :value="scope.Name"
+									   :id = "'hidden_scopes_' + scope.Name"
+									   name='ScopesConsented'>
 							</md-list-item>
 							<md-divider v-if = "Model.ResourceScopes.length"></md-divider>
 							<md-subheader class = "md-layout md-alignment-center-left"
@@ -68,11 +71,10 @@
 							</md-subheader>
 							<md-list-item v-if = "Model.ResourceScopes.length"
 										  v-for = "scope in Model.ResourceScopes">
-								<md-checkbox name = "ScopesConsented"
-											 v-bind:id = "'scopes_' + scope.Name"
-											 v-bind:value = "scope.Name"
+								<md-checkbox name = "Md_ScopesConsented"
 											 v-model = "scope.Checked"
-											 v-bind:disabled = "scope.Required" />
+											 :id = "'scopes_' + scope.Name"
+											 :disabled = "scope.Required" />
 								<span class = "md-list-item-text">
 									<span>
 										<span>
@@ -87,10 +89,14 @@
 									</span>
 								</span>
 								<md-icon v-if = "scope.Emphasize">error</md-icon>
-								<input v-if = "scope.Required"
+								<!--<input v-if = "scope.Required"
 									   type = "hidden"
 									   name = "ScopesConsented"
-									   v-bind:value = "scope.Name" />
+									   :value = "scope.Name" />-->
+								<input type="hidden"
+									   :value="scope.Name"
+									   :id = "'hidden_scopes_' + scope.Name"
+									   name='ScopesConsented'>
 							</md-list-item>
 						</md-list>
 					</div>
@@ -192,6 +198,7 @@
 		public Model: IConsentViewModel | null = null;
 		public ReturnUrl: string               = "";
 		public XSRF: string                    = "";
+		public aaa = true;
 
 		public async beforeMount()
 		{
