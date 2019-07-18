@@ -22,6 +22,15 @@ const router = new Router({
 			component: () => import(/* webpackChunkName: "login" */ "./views/Login.vue"),
 		},
 		{
+			path: "/account/logout",
+			redirect: `/${I18n.default.locale}/account/logout`,
+		},
+		{
+			path: "/:locale/account/logout",
+			name:      "logout",
+			component: () => import(/* webpackChunkName: "logout" */ "./views/Logout.vue"),
+		},
+		{
 			path: "/grants",
 			redirect: `/${I18n.default.locale}/grants`,
 		},
