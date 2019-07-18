@@ -126,7 +126,9 @@
 
 			this.Sending = true;
 
-			this.ReturnUrl = (this.$route.query as any).ReturnUrl || "";
+			const request = (this.$route.query as any);
+
+			this.ReturnUrl = request.ReturnUrl || request.returnUrl || "";
 
 			this.XSRF = this.$cookies.get("XSRF-TOKEN");
 
