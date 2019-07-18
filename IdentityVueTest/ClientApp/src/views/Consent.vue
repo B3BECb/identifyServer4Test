@@ -13,12 +13,12 @@
 			</md-card-header>
 			<md-card-content>
 				<div class = "md-layout md-gutter md-alignment-center-left">
-					<div class = "md-layout-item md-small-size-100">
+					<div class = "md-hide">
 						<input type = "hidden"
 							   v-model = "XSRF"
 							   name = "XSRF-TOKEN-FIELD" />
 					</div>
-					<div class = "md-layout-item md-small-size-100">
+					<div class = "md-hide">
 						<input type = "hidden"
 							   v-model = "ReturnUrl"
 							   name = "returnUrl" />
@@ -52,16 +52,14 @@
 									</span>
 								</span>
 								<md-icon v-if = "scope.Emphasize">error</md-icon>
-								<!--<input v-if = "scope.Required"
+								<input v-if = "scope.Required || scope.Checked"
 									   type = "hidden"
 									   name = "ScopesConsented"
-									   v-bind:value = "scope.Name" />-->
-								<input type="hidden"
-									   :value="scope.Name"
-									   :id = "'hidden_scopes_' + scope.Name"
-									   name='ScopesConsented'>
+									   v-bind:value = "scope.Name" />
 							</md-list-item>
+
 							<md-divider v-if = "Model.ResourceScopes.length"></md-divider>
+
 							<md-subheader class = "md-layout md-alignment-center-left"
 										  v-if = "Model.ResourceScopes.length">
 								<!--<span class="md-layout-item">-->
@@ -69,6 +67,7 @@
 								<!--</span>-->
 								<span class = "md-layout-item">Application Access</span>
 							</md-subheader>
+
 							<md-list-item v-if = "Model.ResourceScopes.length"
 										  v-for = "scope in Model.ResourceScopes">
 								<md-checkbox name = "Md_ScopesConsented"
@@ -89,14 +88,10 @@
 									</span>
 								</span>
 								<md-icon v-if = "scope.Emphasize">error</md-icon>
-								<!--<input v-if = "scope.Required"
+								<input v-if = "scope.Required || scope.Checked"
 									   type = "hidden"
 									   name = "ScopesConsented"
-									   :value = "scope.Name" />-->
-								<input type="hidden"
-									   :value="scope.Name"
-									   :id = "'hidden_scopes_' + scope.Name"
-									   name='ScopesConsented'>
+									   :value = "scope.Name" />
 							</md-list-item>
 						</md-list>
 					</div>
@@ -211,8 +206,6 @@
 			data = this.CapitalizeKeys(data.data);
 
 			this.Model = data;
-
-			console.log(this.Model);
 		}
 
 		public submit(e: Event)
@@ -220,10 +213,6 @@
 			this.ReturnUrl = (this.$route.query as any).ReturnUrl || "";
 
 			this.XSRF = this.$cookies.get("XSRF-TOKEN");
-
-			console.log(this.Model);
-
-			e.preventDefault();
 
 			return true;
 		}
