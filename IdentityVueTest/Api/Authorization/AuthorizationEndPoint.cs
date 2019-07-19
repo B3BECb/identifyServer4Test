@@ -144,6 +144,7 @@ namespace IdentityVueTest.Api
 		/// Show logout page
 		/// </summary>
 		[HttpGet]
+		[Route("api/v1/authorization/logout")]
 		public async Task<IActionResult> Logout(string logoutId)
 		{
 			// build a model so the logout page knows what to display
@@ -156,7 +157,7 @@ namespace IdentityVueTest.Api
 				return await Logout(vm);
 			}
 
-			return View(vm);
+			return new JsonResult(vm);
 		}
 
 		/// <summary>
@@ -164,6 +165,7 @@ namespace IdentityVueTest.Api
 		/// </summary>
 		[HttpPost]
 		[ValidateAntiForgeryToken]
+		[Route("api/v1/authorization/logout")]
 		public async Task<IActionResult> Logout(LogoutInputModel model)
 		{
 			// build a model so the logged out page knows what to display
@@ -190,7 +192,7 @@ namespace IdentityVueTest.Api
 				return SignOut(new AuthenticationProperties { RedirectUri = url }, vm.ExternalAuthenticationScheme);
 			}
 
-			return View("LoggedOut", vm);
+			return Redirect("/account/loggedOut");
 		}
 
 		private async Task<LogoutViewModel> BuildLogoutViewModelAsync(string logoutId)

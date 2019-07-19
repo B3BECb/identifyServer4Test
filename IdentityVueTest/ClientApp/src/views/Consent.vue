@@ -118,13 +118,11 @@
 <script lang = "ts">
 	import { Component, Vue } from "vue-property-decorator";
 	import Axios from "axios";
-	import { upperFirst } from "lodash";
+	import Capitalize from "@/assets/ts/helpers/KeysCapitalizer";
 	import {
 		MdButton,
 		MdContent,
 		MdCard,
-		MdProgress,
-		MdField,
 		MdCheckbox,
 		MdIcon,
 		MdList,
@@ -133,53 +131,9 @@
 		// @ts-ignore
 	} from "vue-material/dist/components";
 
-	interface IConsentInputModel
-	{
-		Button: string;
-
-		ScopesConsented: string[];
-
-		RememberConsent: boolean;
-
-		ReturnUrl: string;
-	}
-
-	interface IConsentViewModel
-		extends IConsentInputModel
-	{
-		ClientName: string;
-
-		ClientUrl: string;
-
-		ClientLogoUrl: string;
-
-		AllowRememberConsent: boolean;
-
-		IdentityScopes: IScopeViewModel[];
-
-		ResourceScopes: IScopeViewModel[];
-	}
-
-	interface IScopeViewModel
-	{
-		Name: string;
-
-		DisplayName: string;
-
-		Description: string;
-
-		Emphasize: boolean;
-
-		Required: boolean;
-
-		Checked: boolean;
-	}
-
 	Vue.use(MdButton);
 	Vue.use(MdContent);
 	Vue.use(MdCard);
-	Vue.use(MdProgress);
-	Vue.use(MdField);
 	Vue.use(MdCheckbox);
 	Vue.use(MdIcon);
 	Vue.use(MdList);
@@ -193,7 +147,6 @@
 		public Model: IConsentViewModel | null = null;
 		public ReturnUrl: string               = "";
 		public XSRF: string                    = "";
-		public aaa = true;
 
 		public async beforeMount()
 		{
@@ -203,7 +156,7 @@
 				params: this.$route.query,
 			});
 
-			data = this.CapitalizeKeys(data.data);
+			data = Capitalize(data.data);
 
 			this.Model = data;
 		}
@@ -217,28 +170,6 @@
 			this.XSRF = this.$cookies.get("XSRF-TOKEN");
 
 			return true;
-		}
-
-		private CapitalizeKeys(obj: any): any
-		{
-			if(Array.isArray(obj))
-			{
-				return obj.map((v: any) => this.CapitalizeKeys(v));
-			}
-			else
-			{
-				if(obj !== null && obj.constructor === Object)
-				{
-					return Object.keys(obj).reduce(
-						(result, key) => ({
-							...result,
-							[upperFirst(key)]: this.CapitalizeKeys(obj[key]),
-						}),
-						{},
-					);
-				}
-			}
-			return obj;
 		}
 	}
 </script>
