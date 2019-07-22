@@ -74,7 +74,7 @@ namespace IdentityVueTest
 						IdentityServerConstants.StandardScopes.Profile,
 						"api1"
 					},
-					AllowOfflineAccess = true
+					AllowOfflineAccess = true,
 				},
 
 				new Client

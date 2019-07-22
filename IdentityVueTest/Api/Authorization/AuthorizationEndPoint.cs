@@ -144,7 +144,7 @@ namespace IdentityVueTest.Api
 		/// Show logout page
 		/// </summary>
 		[HttpGet]
-		[Route("api/v1/authorization/logout")]
+		[Route("account/logout")]
 		public async Task<IActionResult> Logout(string logoutId)
 		{
 			// build a model so the logout page knows what to display
@@ -156,6 +156,19 @@ namespace IdentityVueTest.Api
 				// we don't need to show the prompt and can just log the user out directly.
 				return await Logout(vm);
 			}
+
+			return Redirect("/account/logout/prompt");
+		}
+
+		/// <summary>
+		/// Handle logout data
+		/// </summary>
+		[HttpGet]
+		[Route("/api/v1/authorization/logout")]
+		public async Task<IActionResult> LogoutData(string logoutId)
+		{
+			// build a model so the logout page knows what to display
+			var vm = await BuildLogoutViewModelAsync(logoutId);
 
 			return new JsonResult(vm);
 		}

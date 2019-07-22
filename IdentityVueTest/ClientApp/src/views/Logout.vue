@@ -36,15 +36,15 @@
 
 		public async beforeMount()
 		{
-			// let data: any = await Axios({
-			// 	method: "get",
-			// 	url:    "/api/v1/authorization/logout",
-			// 	params: this.$route.query,
-			// });
-			//
-			// data = Capitalize(data.data);
-			//
-			// this.Model = data;
+			let data: any = await Axios({
+				method: "get",
+				url:    "/api/v1/authorization/logout",
+				params: this.$route.query,
+			});
+
+			data = Capitalize(data.data);
+
+			this.Model = data;
 		}
 	};
 </script>
