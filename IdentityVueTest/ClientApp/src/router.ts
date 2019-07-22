@@ -31,6 +31,15 @@ const router = new Router({
 			component: () => import(/* webpackChunkName: "logout" */ "./views/Logout.vue"),
 		},
 		{
+			path: "/account/loggedOut",
+			redirect: `/${I18n.default.locale}/account/loggedOut`,
+		},
+		{
+			path: "/:locale/account/loggedOut",
+			name:      "loggedOut",
+			component: () => import(/* webpackChunkName: "loggedOut" */ "./views/LoggedOut.vue"),
+		},
+		{
 			path: "/grants",
 			redirect: `/${I18n.default.locale}/grants`,
 		},
