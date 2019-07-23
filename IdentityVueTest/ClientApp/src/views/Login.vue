@@ -115,7 +115,7 @@
 			}
 		}
 
-		public async submit(e: Event)
+		public submit(e: Event)
 		{
 			this.$v.$touch();
 			if(this.$v.$invalid)

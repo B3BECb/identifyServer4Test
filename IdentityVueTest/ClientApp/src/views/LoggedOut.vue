@@ -34,14 +34,14 @@
 		public async beforeMount()
 		{
 			const queryParams: any = this.$route.query;
-			console.log(queryParams.PostLogoutRedirectUri);
-			console.log(queryParams.ClientName);
-			console.log(queryParams.SignOutIframeUrl);
 
 			const model = {
-				PostLogoutRedirectUri: queryParams.PostLogoutRedirectUri,
-				ClientName: queryParams.ClientName,
-				SignOutIframeUrl: queryParams.SignOutIframeUrl,
+				PostLogoutRedirectUri: queryParams.PostLogoutRedirectUri
+				|| queryParams.postLogoutRedirectUri,
+				ClientName: queryParams.ClientName
+				|| queryParams.clientName,
+				SignOutIframeUrl: queryParams.SignOutIframeUrl
+				|| queryParams.signOutIframeUrl,
 			};
 
 			this.Model = model as ILoggedOutViewModel;
@@ -50,7 +50,7 @@
 </script>
 
 <style scoped>
-	ifame
+	iframe
 	{
 		display: none;
 		width: 0;

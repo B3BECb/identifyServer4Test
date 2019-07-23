@@ -157,20 +157,7 @@ namespace IdentityVueTest.Api
 				return await Logout(vm);
 			}
 
-			return Redirect("/account/logout/prompt");
-		}
-
-		/// <summary>
-		/// Handle logout data
-		/// </summary>
-		[HttpGet]
-		[Route("/api/v1/authorization/logout")]
-		public async Task<IActionResult> LogoutData(string logoutId)
-		{
-			// build a model so the logout page knows what to display
-			var vm = await BuildLogoutViewModelAsync(logoutId);
-
-			return new JsonResult(vm);
+			return Redirect("/account/logout/prompt?logoutId=" + vm.LogoutId);
 		}
 
 		/// <summary>
@@ -178,7 +165,7 @@ namespace IdentityVueTest.Api
 		/// </summary>
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		[Route("api/v1/authorization/logout")]
+		[Route("account/logout")]
 		public async Task<IActionResult> Logout(LogoutInputModel model)
 		{
 			// build a model so the logged out page knows what to display

@@ -7,7 +7,11 @@
 		<div class = "row">
 			<div class = "col-sm-6">
 				<p>Would you like to logout of IdentityServer?</p>
-				<form asp-action = "Logout">
+				<form action="/account/logout"
+					  method="post">
+					<input v-model = "XSRF"
+						   type="hidden"
+						   name = "XSRF-TOKEN-FIELD" />
 					<input type = "hidden"
 						   name = "logoutId"
 						   :value = "Model.LogoutId" />
@@ -24,8 +28,6 @@
 
 <script lang="ts">
 	import {Component, Vue} from "vue-property-decorator";
-	import Axios from "axios";
-	import Capitalize from "@/assets/ts/helpers/KeysCapitalizer";
 
 	@Component
 	export default class Logout
@@ -36,15 +38,15 @@
 
 		public async beforeMount()
 		{
-			let data: any = await Axios({
-				method: "get",
-				url:    "/api/v1/authorization/logout",
-				params: this.$route.query,
-			});
+			const queryParams: any = this.$route.query;
 
-			data = Capitalize(data.data);
+			const model = {
+				LogoutId: queryParams.logoutId || queryParams.LogoutId,
+			};
 
-			this.Model = data;
+			this.Model = model as ILogoutViewModel;
+
+			this.XSRF = this.$cookies.get("XSRF-TOKEN");
 		}
 	};
 </script>
