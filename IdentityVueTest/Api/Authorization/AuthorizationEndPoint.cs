@@ -205,7 +205,7 @@ namespace IdentityVueTest.Api
 				return SignOut(new AuthenticationProperties { RedirectUri = url }, vm.ExternalAuthenticationScheme);
 			}
 
-			return Redirect("/account/loggedOut?PostLogoutRedirectUri=0&ClientName=0&SignOutIframeUrl=0");
+			return Redirect($"/account/loggedOut?PostLogoutRedirectUri={vm?.PostLogoutRedirectUri}&ClientName={vm.ClientName}&SignOutIframeUrl={vm.SignOutIframeUrl}");
 		}
 
 		private async Task<LogoutViewModel> BuildLogoutViewModelAsync(string logoutId)

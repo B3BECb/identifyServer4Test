@@ -12,7 +12,7 @@
 				</div>
 			</md-card-header>
 			<md-card-content>
-				<div class = "md-layout md-gutter md-alignment-center-left">
+				<div class = "md-layout md-gutter md-alignment-left">
 					<div class = "md-hide">
 						<input type = "hidden"
 							   v-model = "XSRF"
@@ -97,19 +97,29 @@
 					</div>
 				</div>
 			</md-card-content>
-			<md-card-actions>
-				<md-button name = "button"
-						   value = "yes"
-						   type = "submit"
-						   class = "md-raised md-primary"
-						   autofocus>Allow
+			<md-card-actions md-alignment = "space-between">
+				<span>
+					<md-checkbox style = "margin-left: 24px"
+								 v-model = "Model.RememberConsent"
+								 v-if = "Model.AllowRememberConsent">Remember My Decision</md-checkbox>
+					<input type = "hidden"
+						   name = "RememberConsent"
+						   :value = Model.RememberConsent>
+				</span>
+				<span>
+					<md-button name = "button"
+							   value = "yes"
+							   type = "submit"
+							   class = "md-raised md-primary"
+							   autofocus>Allow
+					</md-button>
+					<md-button name = "button"
+							   value = "no"
+							   type = "submit"
+							   class = "md-dense md-primary"
+							   autofocus>Cancel
 				</md-button>
-				<md-button name = "button"
-						   value = "no"
-						   type = "submit"
-						   class = "md-dense md-primary"
-						   autofocus>Cancel
-				</md-button>
+				</span>
 			</md-card-actions>
 		</md-card>
 	</form>

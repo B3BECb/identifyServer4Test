@@ -5,7 +5,7 @@
 			<small>You are now logged out</small>
 		</h1>
 
-		<div v-if = "!Model.PostLogoutRedirectUri">
+		<div v-if = "Model.PostLogoutRedirectUri">
 			Click
 			<a class = "PostLogoutRedirectUri"
 			   :href = "Model.PostLogoutRedirectUri">
@@ -16,7 +16,6 @@
 		<iframe v-if = "Model.SignOutIframeUrl"
 				width = "0"
 				height = "0"
-				class = "signout"
 				:src = "Model.SignOutIframeUrl"></iframe>
 	</div>
 </template>
@@ -34,19 +33,27 @@
 
 		public async beforeMount()
 		{
-			let data: any = await Axios({
-				method: "get",
-				url:    "/api/v1/consent",
-				params: this.$route.query,
-			});
+			const queryParams: any = this.$route.query;
+			console.log(queryParams.PostLogoutRedirectUri);
+			console.log(queryParams.ClientName);
+			console.log(queryParams.SignOutIframeUrl);
 
-			data = Capitalize(data.data);
+			const model = {
+				PostLogoutRedirectUri: queryParams.PostLogoutRedirectUri,
+				ClientName: queryParams.ClientName,
+				SignOutIframeUrl: queryParams.SignOutIframeUrl,
+			};
 
-			this.Model = data;
+			this.Model = model as ILoggedOutViewModel;
 		}
 	};
 </script>
 
 <style scoped>
-
+	ifame
+	{
+		display: none;
+		width: 0;
+		height: 0;
+	}
 </style>
