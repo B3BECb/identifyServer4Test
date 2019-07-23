@@ -24,6 +24,7 @@ namespace MvcClient
                 {
 					options.SignInScheme = "Cookies";
 
+					options.Authority = "https://localhost:5000";
 					options.Authority = "http://localhost:5000";
 					options.RequireHttpsMetadata = false;
 
