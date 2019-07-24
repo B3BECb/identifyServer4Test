@@ -57,8 +57,8 @@
 		<div class = "langs">
 			<div></div>
 			<div style = "text-align: end">Язык:</div>
-			<router-link :to = "{ name: 'login', params: {locale: 'ru'}}">Русский</router-link>
-			<router-link :to = "{ name: 'login', params: {locale: 'en'}}">English</router-link>
+			<router-link :to = "{ name: 'login', params: {locale: 'ru'}, query: $route.query}">Русский</router-link>
+			<router-link :to = "{ name: 'login', params: {locale: 'en'}, query: $route.query}">English</router-link>
 		</div>
 	</div>
 </template>

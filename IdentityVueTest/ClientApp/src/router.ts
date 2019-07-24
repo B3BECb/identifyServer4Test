@@ -57,22 +57,13 @@ const router = new Router({
 			name:      "consent",
 			component: () => import(/* webpackChunkName: "consent" */ "./views/Consent.vue"),
 		},
-		// {
-		// 	path: "/:locale",
-		// 	name:      "home",
-		// 	component: Home,
-		// },
-		// {
-		// 	path:      "/:locale/about",
-		// 	name:      "about",
-		// 	component: () => import(/* webpackChunkName: "about" */ "./views/About.vue"),
-		// },
 	],
 });
 
 router.beforeEach((to, from, next) => {
 	const lang = to.params.locale;
 	I18n.loadLanguageAsync(lang).then(() => next());
+	Vue.cookies.set("lang", lang);
 });
 
 export default router;

@@ -1,12 +1,16 @@
 import Vue from "vue";
 import VueI18n, { LocaleMessages } from "vue-i18n";
 import axios from "axios";
+import VueCookies from "vue-cookies";
 
+Vue.use(VueCookies);
 Vue.use(VueI18n);
 
 const DEFAULT_LANG = "en";
 
 const loadedLanguages = [DEFAULT_LANG];
+
+const cookieLocale = Vue.cookies.get("lang");
 
 const AvailableLocales = getAvailableLocales();
 
@@ -31,9 +35,9 @@ function loadLocale(lang: string): LocaleMessages {
 }
 
 const i18n = new VueI18n({
-	locale:         process.env.VUE_APP_I18N_LOCALE || DEFAULT_LANG,
+	locale:         cookieLocale || process.env.VUE_APP_I18N_LOCALE || DEFAULT_LANG,
 	fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE || DEFAULT_LANG,
-	messages:       loadLocale(DEFAULT_LANG),
+	messages:       loadLocale(cookieLocale || process.env.VUE_APP_I18N_LOCALE || DEFAULT_LANG),
 });
 
 function setI18nLanguage(lang: string) {
