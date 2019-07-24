@@ -21,7 +21,7 @@
 							<label>{{$t('login')}}</label>
 							<md-input v-model = "Login"
 									  autocomplete = "name"
-									  name="login"
+									  name = "login"
 							></md-input>
 							<span class = "md-error"
 								  v-if = "!$v.Login.required">{{$t('loginError')}}</span>
