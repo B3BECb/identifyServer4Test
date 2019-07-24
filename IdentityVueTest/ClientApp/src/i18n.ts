@@ -10,7 +10,8 @@ const DEFAULT_LANG = "en";
 
 const loadedLanguages = [DEFAULT_LANG];
 
-const cookieLocale = Vue.cookies.get("lang");
+let cookieLocale = Vue.cookies.get("lang");
+cookieLocale = cookieLocale === "undefined" ? DEFAULT_LANG : cookieLocale;
 
 const AvailableLocales = getAvailableLocales();
 
