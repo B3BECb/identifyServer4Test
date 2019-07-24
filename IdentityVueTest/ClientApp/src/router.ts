@@ -63,7 +63,7 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
 	const lang = to.params.locale;
 	I18n.loadLanguageAsync(lang).then(() => next());
-	Vue.cookies.set("lang", lang);
+	Vue.cookies.set("lang", lang, "1Y");
 });
 
 export default router;
