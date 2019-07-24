@@ -29,13 +29,11 @@
 	import {Component, Vue} from "vue-property-decorator";
 	import {
 		MdButton,
-		MdContent,
 		MdCard,
 		// @ts-ignore
 	} from "vue-material/dist/components";
 
 	Vue.use(MdButton);
-	Vue.use(MdContent);
 	Vue.use(MdCard);
 
 	@Component
