@@ -12,11 +12,11 @@ const router = new Router({
 			path: "/",
 			redirect: `/${I18n.default.locale}`,
 		},
-		// {
-		// 	path: "/:locale/main",
-		// 	name:      "index",
-		// 	component: () => import(/* webpackChunkName: "index" */ "./views/Index.vue"),
-		// },
+		{
+			path: "/:locale",
+			name:      "index",
+			component: () => import(/* webpackChunkName: "index" */ "./views/Index.vue"),
+		},
 		{
 			path: "/account/login",
 			redirect: `/${I18n.default.locale}/account/login`,
