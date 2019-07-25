@@ -59,7 +59,7 @@
 		display: grid;
 
 		grid-template-columns: 1fr 2fr 1fr 1fr 1fr 2fr 1fr;
-		grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+		grid-template-rows: 1fr auto auto auto 1fr;
 
 		width: 100vw;
 		height: 100vh;
@@ -81,5 +81,6 @@
 
 		grid-column-start: 2;
 		grid-row-start: 3;
+		grid-row-end: 5;
 	}
 </style>
