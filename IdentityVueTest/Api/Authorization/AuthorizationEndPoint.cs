@@ -93,6 +93,29 @@ namespace IdentityVueTest.Api
 			Events = events;
 		}
 
+		//[HttpGet]
+		//[Route("account/login")]
+		//public async Task<IActionResult> Login(string returnUrl)
+		//{
+		//	var vm = await BuildLoginViewModelAsync(returnUrl);
+
+		//	if (vm.IsExternalLoginOnly)
+		//	{
+		//		return RedirectToAction("Challenge", "External", new { provider = vm.ExternalLoginScheme, returnUrl });
+		//	}
+
+		//	return Redirect("/account/authorization/login?returnUrl=" + returnUrl);
+		//}
+
+		[HttpGet]
+		[Route("api/v1/authorization/loginData")]
+		public async Task<IActionResult> LoginData(string returnUrl)
+		{
+			var vm = await BuildLoginViewModelAsync(returnUrl);
+
+			return new JsonResult(vm);
+		}
+
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		[Route("api/v1/authorization/login")]
@@ -193,6 +216,66 @@ namespace IdentityVueTest.Api
 			}
 
 			return Redirect($"/account/loggedOut?PostLogoutRedirectUri={vm?.PostLogoutRedirectUri}&ClientName={vm.ClientName}&SignOutIframeUrl={vm.SignOutIframeUrl}");
+		}
+
+		private async Task<LoginViewModel> BuildLoginViewModelAsync(string returnUrl)
+		{
+			var context = await Interaction.GetAuthorizationContextAsync(returnUrl);
+			if (context?.IdP != null)
+			{
+				// this is meant to short circuit the UI and only trigger the one external IdP
+				return new LoginViewModel
+				{
+					EnableLocalLogin = false,
+					ReturnUrl = returnUrl,
+					Username = context?.LoginHint,
+					ExternalProviders = new ExternalProvider[] { new ExternalProvider { AuthenticationScheme = context.IdP } }
+				};
+			}
+
+			var schemes = await SchemeProvider.GetAllSchemesAsync();
+
+			var providers = schemes
+				.Where(x => x.DisplayName != null ||
+							(x.Name.Equals(AccountOptions.WindowsAuthenticationSchemeName, StringComparison.OrdinalIgnoreCase))
+				)
+				.Select(x => new ExternalProvider
+				{
+					DisplayName = x.DisplayName,
+					AuthenticationScheme = x.Name
+				}).ToList();
+
+			var allowLocal = true;
+			if (context?.ClientId != null)
+			{
+				var client = await ClientStore.FindEnabledClientByIdAsync(context.ClientId);
+				if (client != null)
+				{
+					allowLocal = client.EnableLocalLogin;
+
+					if (client.IdentityProviderRestrictions != null && client.IdentityProviderRestrictions.Any())
+					{
+						providers = providers.Where(provider => client.IdentityProviderRestrictions.Contains(provider.AuthenticationScheme)).ToList();
+					}
+				}
+			}
+
+			return new LoginViewModel
+			{
+				AllowRememberLogin = AccountOptions.AllowRememberLogin,
+				EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
+				ReturnUrl = returnUrl,
+				Username = context?.LoginHint,
+				ExternalProviders = providers.ToArray()
+			};
+		}
+
+		private async Task<LoginViewModel> BuildLoginViewModelAsync(LoginInputModel model)
+		{
+			var vm = await BuildLoginViewModelAsync(model.ReturnUrl);
+			vm.Username = model.Username;
+			vm.RememberLogin = model.RememberLogin;
+			return vm;
 		}
 
 		private async Task<LogoutViewModel> BuildLogoutViewModelAsync(string logoutId)

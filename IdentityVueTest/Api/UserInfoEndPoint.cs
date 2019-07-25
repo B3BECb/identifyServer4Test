@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityVueTest.Api
 {
-	[Authorize]
 	public class UserInfoEndPoint : Controller
 	{
 		class UserInfo

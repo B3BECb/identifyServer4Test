@@ -10,10 +10,10 @@ const router = new Router({
 	routes: [
 		{
 			path: "/",
-			redirect: `/${I18n.default.locale}`,
+			redirect: `/${I18n.default.locale}/home`,
 		},
 		{
-			path: "/:locale",
+			path: "/:locale/home",
 			name:      "index",
 			component: () => import(/* webpackChunkName: "index" */ "./views/Index.vue"),
 		},
@@ -66,6 +66,7 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
+	console.log(to)
 	const lang = to.params.locale;
 	I18n.loadLanguageAsync(lang).then(() => next());
 	Vue.cookies.set("lang", lang, "1Y");

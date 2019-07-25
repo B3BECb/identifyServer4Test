@@ -69,6 +69,7 @@
 		required,
 	} from "vuelidate/lib/validators";
 	import { Component, Vue } from "vue-property-decorator";
+	import Capitalize from "@/assets/ts/helpers/KeysCapitalizer";
 	import {
 		MdButton,
 		MdContent,
@@ -77,6 +78,7 @@
 		MdCheckbox,
 		// @ts-ignore
 	} from "vue-material/dist/components";
+	import Axios from "axios";
 
 	Vue.use(MdButton);
 	Vue.use(MdContent);
@@ -103,6 +105,37 @@
 		public RememberLogin: boolean = false;
 		public Sending: boolean       = false;
 
+		public Model: ILoginViewModel = null;
+
+		public async beforeMount()
+		{
+			let data: any = await Axios({
+				method: "get",
+				url:    "/api/v1/authorization/loginData",
+				params: this.$route.query,
+			});
+
+			data = Capitalize(data.data);
+
+			this.Model = data;
+
+			const request = (this.$route.query as any);
+
+			this.ReturnUrl = request.ReturnUrl || request.returnUrl || "";
+
+			console.log(this.ReturnUrl);
+
+			this.XSRF = this.$cookies.get("XSRF-TOKEN");
+
+			if(this.Model.IsExternalLoginOnly)
+			{
+				window.location =
+					`/External/Challenge?provider=${ this
+						.Model.ExternalLoginScheme }&returnUrl=${ this
+						.ReturnUrl }` as Location;
+			}
+		}
+
 		public getValidationClass(fieldName: string)
 		{
 			const field = this.$v[fieldName];
@@ -125,12 +158,6 @@
 			}
 
 			this.Sending = true;
-
-			const request = (this.$route.query as any);
-
-			this.ReturnUrl = request.ReturnUrl || request.returnUrl || "";
-
-			this.XSRF = this.$cookies.get("XSRF-TOKEN");
 
 			return true;
 		}

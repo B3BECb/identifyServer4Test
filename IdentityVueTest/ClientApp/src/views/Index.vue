@@ -11,7 +11,7 @@
 		</md-list>
 		<md-list v-else>
 			<md-subheader>Actions</md-subheader>
-			<md-list-item :to = "{name: 'login'}">Login</md-list-item>
+			<md-list-item href = "/account/login">Login</md-list-item>
 		</md-list>
 	</div>
 </template>
