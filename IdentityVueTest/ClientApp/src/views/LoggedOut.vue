@@ -14,6 +14,13 @@
 						here </a>
 					to return to the <span>{{Model.ClientName}}</span> application.
 				</div>
+				<div v-else>
+					Click
+					<router-link class = "PostLogoutRedirectUri"
+					   :to = "{name: 'index'}">
+						here </router-link>
+					to return to the OIDC application.
+				</div>
 
 				<iframe v-if = "Model.SignOutIframeUrl"
 						width = "0"
