@@ -70,6 +70,8 @@
 		grid-column-end: 6;
 
 		grid-row-start: 2;
+
+		margin-bottom: 8px;
 	}
 
 	.md-list {
