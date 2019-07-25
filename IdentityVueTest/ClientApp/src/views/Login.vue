@@ -1,58 +1,92 @@
 <template>
 	<div class = "view-container">
-		<div class = "centered-container">
-			<md-content class = "md-elevation-3">
-				<form @submit = "submit"
-					  method = "post"
-					  action = "/api/v1/authorization/login">
-					<div class = "title">
-						<div class = "md-title">Mallenom systems</div>
-					</div>
-					<md-field style = "display: none;">
-						<md-input v-model = "XSRF"
-								  name = "XSRF-TOKEN-FIELD"></md-input>
-					</md-field>
-					<md-field style = "display: none;">
-						<md-input v-model = "ReturnUrl"
-								  name = "returnUrl"></md-input>
-					</md-field>
-					<div class = "form">
-						<md-field :class = "getValidationClass('Login')">
-							<label>{{$t('login')}}</label>
-							<md-input v-model = "Login"
-									  autocomplete = "name"
-									  name = "login"
-							></md-input>
-							<span class = "md-error"
-								  v-if = "!$v.Login.required">{{$t('loginError')}}</span>
+		<div v-if = "Model"
+			 class = "centered-container">
+			<div class = "md-layout">
+				<md-content class = "md-elevation-3"
+							v-if = "Model.EnableLocalLogin">
+					<form @submit = "submit"
+						  method = "post"
+						  action = "/api/v1/authorization/login">
+						<div class = "title">
+							<div class = "md-title">Mallenom systems</div>
+						</div>
+						<md-field style = "display: none;">
+							<md-input v-model = "XSRF"
+									  name = "XSRF-TOKEN-FIELD"></md-input>
 						</md-field>
-						<md-field :class = "getValidationClass('Password')">
-							<label>{{$t('password')}}</label>
-							<md-input v-model = "Password"
-									  type = "password"
-									  name = "password"
-									  autocomplete = "password"></md-input>
-							<span class = "md-error"
-								  v-if = "!$v.Password.required">{{$t('passwordError')}}</span>
+						<md-field style = "display: none;">
+							<md-input v-model = "ReturnUrl"
+									  name = "returnUrl"></md-input>
 						</md-field>
-						<md-checkbox v-model = "RememberLogin">Remember me</md-checkbox>
-					</div>
+						<div class = "form">
+							<md-field :class = "getValidationClass('Login')">
+								<label>{{$t('login')}}</label>
+								<md-input v-model = "Login"
+										  autocomplete = "name"
+										  name = "login"
+								></md-input>
+								<span class = "md-error"
+									  v-if = "!$v.Login.required">{{$t('loginError')}}</span>
+							</md-field>
+							<md-field :class = "getValidationClass('Password')">
+								<label>{{$t('password')}}</label>
+								<md-input v-model = "Password"
+										  type = "password"
+										  name = "password"
+										  autocomplete = "password"></md-input>
+								<span class = "md-error"
+									  v-if = "!$v.Password.required">{{$t('passwordError')}}</span>
+							</md-field>
+							<md-checkbox v-model = "RememberLogin"
+										 v-if = "Model.AllowRememberLogin">Remember me
+							</md-checkbox>
+						</div>
 
-					<div class = "actions md-layout md-alignment-center-right">
-						<md-button type = "submit"
-								   class = "md-raised md-primary"
-								   :disabled = "Sending">
-							{{$t('singIn')}}
-						</md-button>
-					</div>
+						<div class = "actions md-layout md-alignment-center-right">
+							<md-button type = "submit"
+									   class = "md-raised md-primary"
+									   :disabled = "Sending">
+								{{$t('singIn')}}
+							</md-button>
+						</div>
 
-					<div class = "loading-overlay"
-						 v-if = "Sending">
-						<md-progress-spinner md-mode = "indeterminate"
-											 :md-stroke = "2"></md-progress-spinner>
+						<div class = "loading-overlay"
+							 v-if = "Sending">
+							<md-progress-spinner md-mode = "indeterminate"
+												 :md-stroke = "2"></md-progress-spinner>
+						</div>
+					</form>
+				</md-content>
+				<md-content class = "md-elevation-3"
+							v-if = "Model.VisibleExternalProviders.length">
+					External providers: coming soon
+					<div v-for = "provider in Model.VisibleExternalProviders">
+						<div class = ""
+							 :click = "Challenge(provider.AuthenticationScheme, Model.ReturnUrl)">
+							{{provider.DisplayName}}
+						</div>
 					</div>
-				</form>
-			</md-content>
+				</md-content>
+			</div>
+			<md-empty-state
+						v-if = "(!Model.EnableLocalLogin && !Model.VisibleExternalProviders.length)"
+						class = "md-accent md-theme-error"
+						md-rounded
+						md-icon = "error_outline"
+						md-label = "Invalid login request"
+						md-description = "There are no login schemes configured for this client.">
+				</md-empty-state>
+		</div>
+		<div class = "centered-container"
+			 v-else>
+			<md-empty-state
+					class = "md-accent md-theme-error"
+					md-rounded
+					md-icon = "sync_problem"
+					md-label = "Cannot sync"
+					md-description = "Unable to sync login data.">
+			</md-empty-state>
 		</div>
 		<div class = "langs">
 			<div></div>
@@ -76,6 +110,7 @@
 		MdProgress,
 		MdField,
 		MdCheckbox,
+		MdEmptyState,
 		// @ts-ignore
 	} from "vue-material/dist/components";
 	import Axios from "axios";
@@ -85,6 +120,7 @@
 	Vue.use(MdProgress);
 	Vue.use(MdField);
 	Vue.use(MdCheckbox);
+	Vue.use(MdEmptyState);
 
 	@Component({
 		mixins:      [validationMixin],
@@ -123,17 +159,18 @@
 
 			this.ReturnUrl = request.ReturnUrl || request.returnUrl || "";
 
-			console.log(this.ReturnUrl);
-
 			this.XSRF = this.$cookies.get("XSRF-TOKEN");
 
 			if(this.Model.IsExternalLoginOnly)
 			{
-				window.location =
-					`/External/Challenge?provider=${ this
-						.Model.ExternalLoginScheme }&returnUrl=${ this
-						.ReturnUrl }` as Location;
+				Login.Challenge(this.Model.ExternalLoginScheme, this.ReturnUrl);
 			}
+		}
+
+		public static Challenge(scheme: string, returnUrl: string)
+		{
+			window.location =
+				`/External/Challenge?provider=${ scheme }&returnUrl=${ returnUrl }` as Location;
 		}
 
 		public getValidationClass(fieldName: string)
@@ -166,6 +203,16 @@
 
 <style scoped
 	   lang = "scss">
+
+	@import '~material-icons-font/sass/variables';
+	@import '~material-icons-font/sass/mixins';
+
+	$MaterialIcons_FontPath: "~material-icons-font/fonts";
+	@import '~material-icons-font/sass/main';
+	@import '~material-icons-font/sass/Regular';
+	@import '~material-icons-font/sass/sizing';
+	@import '~material-icons-font/sass/coloring';
+
 	.view-container {
 		display: grid;
 		grid-template-rows: 1fr 40px;
@@ -203,8 +250,7 @@
 			.md-content {
 				z-index: 1;
 				padding: 40px;
-				width: 100%;
-				max-width: 400px;
+				width: 400px;
 				position: relative;
 			}
 

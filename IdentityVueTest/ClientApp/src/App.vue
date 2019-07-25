@@ -31,5 +31,11 @@
 			theme: light
 	));
 
+	@include md-register-theme("error", (
+			primary: md-get-palette-color(blue, A200), // The primary color of your application
+			accent: md-get-palette-color(red, A200), // The accent or secondary color
+			theme: light
+	));
+
 	@import "~vue-material/dist/theme/all";
 </style>
