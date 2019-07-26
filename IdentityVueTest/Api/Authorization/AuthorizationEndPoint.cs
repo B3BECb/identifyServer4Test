@@ -124,7 +124,7 @@ namespace IdentityVueTest.Api
 			var context = await Interaction.GetAuthorizationContextAsync(model.ReturnUrl);
 
 			var returnUrl = !string.IsNullOrWhiteSpace(model.ReturnUrl)
-				? "?ReturnUrl=" + model.ReturnUrl
+				? "&ReturnUrl=" + model.ReturnUrl
 				: "";
 
 			if (ModelState.IsValid)
@@ -160,7 +160,7 @@ namespace IdentityVueTest.Api
 				ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
 			}
 
-			return Redirect("~/account/login" + returnUrl);
+			return Redirect("~/account/login?err=true" + returnUrl);
 		}
 
 		/// <summary>

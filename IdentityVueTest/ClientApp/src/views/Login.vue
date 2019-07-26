@@ -70,16 +70,16 @@
 				</md-content>
 			</div>
 			<md-empty-state
-						v-if = "(!Model.EnableLocalLogin && !Model.VisibleExternalProviders.length)"
-						class = "md-accent md-theme-error"
-						md-rounded
-						md-icon = "error_outline"
-						md-label = "Invalid login request"
-						md-description = "There are no login schemes configured for this client.">
-				</md-empty-state>
+					v-if = "IsInvalidLoginRequest"
+					class = "md-accent md-theme-error"
+					md-rounded
+					md-icon = "error_outline"
+					md-label = "Invalid login request"
+					md-description = "There are no login schemes configured for this client.">
+			</md-empty-state>
 		</div>
 		<div class = "centered-container"
-			 v-if="IsSycProblem">
+			 v-if = "IsSycProblem">
 			<md-empty-state
 					class = "md-accent md-theme-error"
 					md-rounded
@@ -94,6 +94,14 @@
 			<router-link :to = "{ name: 'login', params: {locale: 'ru'}, query: $route.query}">Русский</router-link>
 			<router-link :to = "{ name: 'login', params: {locale: 'en'}, query: $route.query}">English</router-link>
 		</div>
+		<md-snackbar :md-position="center"
+					 :md-duration="Infinity"
+					 :md-active.sync="IsLoginError"
+					 md-persistent>
+			<span>Incorrect username or password</span>
+			<md-button class="md-primary"
+					   @click="IsLoginError = false">Ok</md-button>
+		</md-snackbar>
 	</div>
 </template>
 
@@ -111,6 +119,7 @@
 		MdField,
 		MdCheckbox,
 		MdEmptyState,
+		MdSnackbar,
 		// @ts-ignore
 	} from "vue-material/dist/components";
 	import Axios from "axios";
@@ -121,6 +130,7 @@
 	Vue.use(MdField);
 	Vue.use(MdCheckbox);
 	Vue.use(MdEmptyState);
+	Vue.use(MdSnackbar);
 
 	@Component({
 		mixins:      [validationMixin],
@@ -139,14 +149,26 @@
 		public ReturnUrl: string      = "";
 		public XSRF: string           = "";
 		public RememberLogin: boolean = false;
-		public Sending: boolean       = false;
 
+		public Sending: boolean      = false;
 		public IsSycProblem: boolean = false;
+		public IsLoginError: boolean = false;
 
 		public Model: ILoginViewModel = null;
 
+		public get IsInvalidLoginRequest()
+		{
+			return (!this.Model.EnableLocalLogin && !this.Model.VisibleExternalProviders.length);
+		}
+
 		public async beforeMount()
 		{
+			const request = (this.$route.query as any);
+
+			this.ReturnUrl = request.ReturnUrl || request.returnUrl || "";
+
+			this.XSRF = this.$cookies.get("XSRF-TOKEN");
+
 			try
 			{
 				let data: any = await Axios({
@@ -155,20 +177,24 @@
 					params: this.$route.query,
 				});
 
+				if(!data.data)
+				{
+					throw "No data";
+				}
+
 				data = Capitalize(data.data);
 
 				this.Model = data;
+
+				if(request.err)
+				{
+					this.IsLoginError = true;
+				}
 			}
 			catch(exc)
 			{
 				this.IsSycProblem = true;
 			}
-
-			const request = (this.$route.query as any);
-
-			this.ReturnUrl = request.ReturnUrl || request.returnUrl || "";
-
-			this.XSRF = this.$cookies.get("XSRF-TOKEN");
 
 			if(this.Model.IsExternalLoginOnly)
 			{
