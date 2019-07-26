@@ -13,6 +13,7 @@ namespace IdentityVueTest.Api
 {
 	[SecurityHeaders]
 	[Authorize]
+	[Route("api/v1/grants")]
 	public class GrantsEndPoints : Controller
 	{
 		private IIdentityServerInteractionService Interaction { get; set; }
@@ -73,7 +74,7 @@ namespace IdentityVueTest.Api
 			await Interaction.RevokeUserConsentAsync(clientId);
 			await Events.RaiseAsync(new GrantsRevokedEvent(User.GetSubjectId(), clientId));
 
-			return RedirectToAction("Index");
+			return Redirect("/");
 		}
 	}
 }

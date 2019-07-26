@@ -57,7 +57,7 @@
 
 			this.XSRF = this.$cookies.get("XSRF-TOKEN");
 		}
-	};
+	}
 </script>
 
 <style scoped

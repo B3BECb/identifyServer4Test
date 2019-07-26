@@ -38,7 +38,7 @@
 		{
 			try
 			{
-				let data: any = await Axios({
+				const data: any = await Axios({
 					method: "get",
 					url:    "/api/v1/UserInfo",
 				});
@@ -50,7 +50,7 @@
 				this.UserName = null;
 			}
 		}
-	};
+	}
 </script>
 
 <style scoped

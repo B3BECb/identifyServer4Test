@@ -155,11 +155,18 @@
 		public IsSycProblem: boolean = false;
 		public IsLoginError: boolean = false;
 
-		public Model: ILoginViewModel = null;
+		public Model: ILoginViewModel | null = null;
 
 		public get IsInvalidLoginRequest()
 		{
-			return (!this.Model.EnableLocalLogin && !this.Model.VisibleExternalProviders.length);
+			if(this.Model)
+			{
+				return (!this.Model.EnableLocalLogin && !this.Model.VisibleExternalProviders.length);
+			}
+			else
+			{
+				return false;
+			}
 		}
 
 		public async beforeMount()
@@ -180,12 +187,17 @@
 
 				if(!data.data)
 				{
-					throw "No data";
+					throw  new Error("No data");
 				}
 
 				data = Capitalize(data.data);
 
-				this.Model = data;
+				this.Model = data as ILoginViewModel;
+
+				if(this.Model.IsExternalLoginOnly)
+				{
+					this.Challenge(this.Model.ExternalLoginScheme, this.ReturnUrl);
+				}
 
 				if(request.err)
 				{
@@ -196,17 +208,12 @@
 			{
 				this.IsSycProblem = true;
 			}
-
-			if(this.Model.IsExternalLoginOnly)
-			{
-				Login.Challenge(this.Model.ExternalLoginScheme, this.ReturnUrl);
-			}
 		}
 
-		public static Challenge(scheme: string, returnUrl: string)
+		public Challenge(scheme: string, returnUrl: string)
 		{
 			window.location =
-				`/External/Challenge?provider=${ scheme }&returnUrl=${ returnUrl }` as Location;
+				`/External/Challenge?provider=${ scheme }&returnUrl=${ returnUrl }` as any as Location;
 		}
 
 		public getValidationClass(fieldName: string)

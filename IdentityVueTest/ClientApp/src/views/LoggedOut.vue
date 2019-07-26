@@ -63,7 +63,7 @@
 
 			this.Model = model as ILoggedOutViewModel;
 		}
-	};
+	}
 </script>
 
 <style scoped>
