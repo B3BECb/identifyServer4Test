@@ -79,7 +79,7 @@
 				</md-empty-state>
 		</div>
 		<div class = "centered-container"
-			 v-else>
+			 v-if="IsSycProblem">
 			<md-empty-state
 					class = "md-accent md-theme-error"
 					md-rounded
@@ -141,19 +141,28 @@
 		public RememberLogin: boolean = false;
 		public Sending: boolean       = false;
 
+		public IsSycProblem: boolean = false;
+
 		public Model: ILoginViewModel = null;
 
 		public async beforeMount()
 		{
-			let data: any = await Axios({
-				method: "get",
-				url:    "/api/v1/authorization/loginData",
-				params: this.$route.query,
-			});
+			try
+			{
+				let data: any = await Axios({
+					method: "get",
+					url:    "/api/v1/authorization/loginData",
+					params: this.$route.query,
+				});
 
-			data = Capitalize(data.data);
+				data = Capitalize(data.data);
 
-			this.Model = data;
+				this.Model = data;
+			}
+			catch(exc)
+			{
+				this.IsSycProblem = true;
+			}
 
 			const request = (this.$route.query as any);
 
