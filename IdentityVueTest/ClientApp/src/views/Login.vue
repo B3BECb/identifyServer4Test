@@ -94,13 +94,14 @@
 			<router-link :to = "{ name: 'login', params: {locale: 'ru'}, query: $route.query}">Русский</router-link>
 			<router-link :to = "{ name: 'login', params: {locale: 'en'}, query: $route.query}">English</router-link>
 		</div>
-		<md-snackbar :md-position="center"
-					 :md-duration="Infinity"
-					 :md-active.sync="IsLoginError"
+		<md-snackbar :md-position = "center"
+					 :md-duration = "Infinity"
+					 :md-active.sync = "IsLoginError"
 					 md-persistent>
 			<span>Incorrect username or password</span>
-			<md-button class="md-primary"
-					   @click="IsLoginError = false">Ok</md-button>
+			<md-button class = "md-primary"
+					   @click = "IsLoginError = false">Ok
+			</md-button>
 		</md-snackbar>
 	</div>
 </template>
@@ -308,7 +309,10 @@
 			align-items: end;
 			padding-bottom: 8px;
 			display: grid;
-			grid-template-columns: 2fr 1fr 80px 80px;
+
+			grid-template-columns: 2fr auto auto auto;
+			grid-gap: 8px;
+			margin: 0 8px;
 		}
 	}
 </style>
