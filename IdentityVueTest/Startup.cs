@@ -43,11 +43,11 @@ namespace IdentityVueTest
 
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-			//services.Configure<IISOptions>(iis =>
-			//{
-			//	iis.AuthenticationDisplayName = "Windows";
-			//	iis.AutomaticAuthentication = false;
-			//});
+			services.Configure<IISOptions>(iis =>
+			{
+				iis.AuthenticationDisplayName = "Windows";
+				iis.AutomaticAuthentication = false;
+			});
 
 			// In production, the React files will be served from this directory
 			services.AddSpaStaticFiles(configuration =>
@@ -78,10 +78,10 @@ namespace IdentityVueTest
 
 			var builder = services.AddIdentityServer(options =>
 			{
-				//options.Events.RaiseErrorEvents = true;
-				//options.Events.RaiseInformationEvents = true;
-				//options.Events.RaiseFailureEvents = true;
-				//options.Events.RaiseSuccessEvents = true;
+				options.Events.RaiseErrorEvents = true;
+				options.Events.RaiseInformationEvents = true;
+				options.Events.RaiseFailureEvents = true;
+				options.Events.RaiseSuccessEvents = true;
 			})
 				.AddAspNetIdentity<User>()
 				// this adds the config data from DB (clients, resources)
