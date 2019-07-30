@@ -93,20 +93,6 @@ namespace IdentityVueTest.Api
 			Events = events;
 		}
 
-		//[HttpGet]
-		//[Route("account/login")]
-		//public async Task<IActionResult> Login(string returnUrl)
-		//{
-		//	var vm = await BuildLoginViewModelAsync(returnUrl);
-
-		//	if (vm.IsExternalLoginOnly)
-		//	{
-		//		return RedirectToAction("Challenge", "External", new { provider = vm.ExternalLoginScheme, returnUrl });
-		//	}
-
-		//	return Redirect("/account/authorization/login?returnUrl=" + returnUrl);
-		//}
-
 		[HttpGet]
 		[Route("api/v1/authorization/loginData")]
 		public async Task<IActionResult> LoginData(string returnUrl)

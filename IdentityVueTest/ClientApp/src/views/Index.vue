@@ -1,11 +1,17 @@
 <template>
 	<div class = "content">
 		<div class = "title md-display-2">
-			Welcome<span v-if = "UserName">, {{UserName}}, </span>
+			Welcome<span v-if = "Model">, {{Model.UserName}}, </span>
 										  to Mallenom Systems OIDC server
 		</div>
-		<md-list v-if = "UserName">
+		<md-list v-if = "Model">
 			<md-subheader>Actions</md-subheader>
+			<md-list-item :to = "{name: 'users'}"
+						  v-if="Model.IsAdmin">Users</md-list-item>
+			<md-list-item :to = "{name: 'apis'}"
+						  v-if="Model.IsAdmin">APIs</md-list-item>
+			<md-list-item :to = "{name: 'apps'}"
+						  v-if="Model.IsAdmin">Applications</md-list-item>
 			<md-list-item :to = "{name: 'grants'}">Stored grants</md-list-item>
 			<md-list-item :to = "{name: 'logout'}">Logout</md-list-item>
 		</md-list>
@@ -24,6 +30,7 @@
 		// @ts-ignore
 	} from "vue-material/dist/components";
 	import Axios from "axios";
+	import Capitalize from "@/assets/ts/helpers/KeysCapitalizer";
 
 	Vue.use(MdList);
 	Vue.use(MdSubheader);
@@ -32,7 +39,7 @@
 	export default class Index
 		extends Vue
 	{
-		public UserName: string | null = null;
+		public Model: IUserInfo | null = null;
 
 		public async beforeMount()
 		{
@@ -43,11 +50,13 @@
 					url:    "/api/v1/UserInfo",
 				});
 
-				this.UserName = data.data.userName;
+				const model = Capitalize(data.data);
+
+				this.Model = model  as IUserInfo;
 			}
 			catch(exc)
 			{
-				this.UserName = null;
+				this.Model = null;
 			}
 		}
 	}

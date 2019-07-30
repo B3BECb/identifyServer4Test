@@ -4,35 +4,31 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using IdentityServer4.Services;
+using IdentityVueTest.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityVueTest.Api
 {
 	public class UserInfoEndPoint : Controller
 	{
-		class UserInfo
-		{
-			public string UserName { get; set; }
-		}
-
-		private IProfileService ProfileService { get; }
-
-		public UserInfoEndPoint(IProfileService profileService)
-		{
-			ProfileService = profileService;
-		}
-
 		// GET api/<controller>/5
 		[HttpGet]
 		[Route("api/v1/UserInfo")]
-		public IActionResult Get()
+		public async Task<IActionResult> Get()
 		{
-			var user = (HttpContext.User.Identity as ClaimsIdentity);
+			var userClaims = (User.Identity as ClaimsIdentity);
+
+			var isAdmin = false;
+
+			isAdmin |= User.IsInRole("Administrator");
+			isAdmin |= User.IsInRole("Identity administrator");
 
 			return new JsonResult(new UserInfo
 			{
-				UserName = user.Name,
+				UserName = userClaims.Name,
+				IsAdmin = isAdmin,
 			});
 		}
 	}
