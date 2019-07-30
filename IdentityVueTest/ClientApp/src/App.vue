@@ -21,6 +21,15 @@
 
 <style lang = "scss">
 
+	@import '~material-icons-font/sass/variables';
+	@import '~material-icons-font/sass/mixins';
+
+	$MaterialIcons_FontPath: "~material-icons-font/fonts";
+	@import '~material-icons-font/sass/main';
+	@import '~material-icons-font/sass/Regular';
+	@import '~material-icons-font/sass/sizing';
+	@import '~material-icons-font/sass/coloring';
+
 	@import '~vue-material/dist/vue-material.min.css';
 
 	@import "~vue-material/dist/theme/engine"; // Import the theme engine

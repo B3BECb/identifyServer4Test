@@ -1,82 +1,79 @@
 <template>
-	<div>
-		<md-app md-mode = "reveal"
-				style = "height: 100vh;">
-			<md-app-toolbar class = "md-primary">
-				<md-button class = "md-icon-button"
-						   :to = "{name: 'index'}">
-					<md-icon>arrow_back</md-icon>
-				</md-button>
-				<span class = "md-title">Client Application Access</span>
-			</md-app-toolbar>
+	<md-app md-mode = "reveal">
+		<md-app-toolbar class = "md-primary">
+			<md-button class = "md-icon-button"
+					   :to = "{name: 'index'}">
+				<md-icon>arrow_back</md-icon>
+			</md-button>
+			<span class = "md-title">Client Application Access</span>
+		</md-app-toolbar>
 
-			<md-app-content class = "md-layout md-alignment-center"
-							v-if = "IsLoading">
-				<md-progress-spinner md-mode = "indeterminate"></md-progress-spinner>
-			</md-app-content>
+		<md-app-content class = "md-layout md-alignment-center"
+						v-if = "IsLoading">
+			<md-progress-spinner md-mode = "indeterminate"></md-progress-spinner>
+		</md-app-content>
 
-			<md-app-content v-if = "!Model || IsLoadingError">
-				<md-empty-state
-						class = "md-accent md-theme-error"
-						md-rounded
-						md-icon = "sync_problem"
-						md-label = "Cannot sync"
-						md-description = "Unable to sync grants.">
-				</md-empty-state>
-			</md-app-content>
+		<md-app-content v-if = "!Model || IsLoadingError">
+			<md-empty-state
+					class = "md-accent md-theme-error"
+					md-rounded
+					md-icon = "sync_problem"
+					md-label = "Cannot sync"
+					md-description = "Unable to sync grants.">
+			</md-empty-state>
+		</md-app-content>
 
-			<md-app-content v-else-if = "Model.Grants.length && !IsLoading">
-				<md-card v-for = "grant in Model.Grants">
-					<md-card-header class = "md-title">
-						{{grant.ClientName}}
-					</md-card-header>
+		<md-app-content v-else-if = "Model.Grants.length && !IsLoading">
+			<md-card v-for = "grant in Model.Grants">
+				<md-card-header class = "md-title">
+					{{grant.ClientName}}
+				</md-card-header>
 
-					<md-card-media v-if = "grant.ClientLogoUrl">
-						<img :src = "grant.ClientLogoUrl">
-					</md-card-media>
+				<md-card-media v-if = "grant.ClientLogoUrl">
+					<img :src = "grant.ClientLogoUrl">
+				</md-card-media>
 
-					<md-card-content>
-						<div>
-							<span class = "md-subheading">Created:</span>
-							{{DateTime.fromISO(grant.Created).toFormat("dd.MM.yyyy")}}
-						</div>
-						<div v-if = "grant.Expires">
-							<span class = "md-subheading">Expires:</span>
-							{{DateTime.fromISO(grant.Expires.Value).toFormat("dd.MM.yyyy")}}
-						</div>
-						<div v-if = "grant.IdentityGrantNames.length">
-							<div class = "md-subheading">Identity Grants</div>
-							<ul>
-								<li v-for = "name in grant.IdentityGrantNames">{{name}}</li>
-							</ul>
-						</div>
-						<div v-if = "grant.ApiGrantNames.length">
-							<div class = "md-subheading">API Grants</div>
-							<ul>
-								<li v-for = "name in grant.ApiGrantNames">{{name}}</li>
-							</ul>
-						</div>
-					</md-card-content>
+				<md-card-content>
+					<div>
+						<span class = "md-subheading">Created:</span>
+						{{DateTime.fromISO(grant.Created).toFormat("dd.MM.yyyy")}}
+					</div>
+					<div v-if = "grant.Expires">
+						<span class = "md-subheading">Expires:</span>
+						{{DateTime.fromISO(grant.Expires.Value).toFormat("dd.MM.yyyy")}}
+					</div>
+					<div v-if = "grant.IdentityGrantNames.length">
+						<div class = "md-subheading">Identity Grants</div>
+						<ul>
+							<li v-for = "name in grant.IdentityGrantNames">{{name}}</li>
+						</ul>
+					</div>
+					<div v-if = "grant.ApiGrantNames.length">
+						<div class = "md-subheading">API Grants</div>
+						<ul>
+							<li v-for = "name in grant.ApiGrantNames">{{name}}</li>
+						</ul>
+					</div>
+				</md-card-content>
 
-					<md-card-actions>
-						<md-button class = "md-raised md-accent md-theme-error"
-								   @click = "Revoke(grant.ClientId)">
-							Revoke
-						</md-button>
-					</md-card-actions>
-				</md-card>
-			</md-app-content>
+				<md-card-actions>
+					<md-button class = "md-raised md-accent md-theme-error"
+							   @click = "Revoke(grant.ClientId)">
+						Revoke
+					</md-button>
+				</md-card-actions>
+			</md-card>
+		</md-app-content>
 
-			<md-app-content v-else>
-				<md-empty-state
-						md-rounded
-						md-icon = "apps"
-						md-label = "No grants"
-						md-description = "You have not given access to any applications.">
-				</md-empty-state>
-			</md-app-content>
-		</md-app>
-	</div>
+		<md-app-content v-else>
+			<md-empty-state
+					md-rounded
+					md-icon = "apps"
+					md-label = "No grants"
+					md-description = "You have not given access to any applications.">
+			</md-empty-state>
+		</md-app-content>
+	</md-app>
 </template>
 
 <script lang = "ts">
@@ -171,15 +168,10 @@
 
 <style scoped
 	   lang = "scss">
-
-	@import '~material-icons-font/sass/variables';
-	@import '~material-icons-font/sass/mixins';
-
-	$MaterialIcons_FontPath: "~material-icons-font/fonts";
-	@import '~material-icons-font/sass/main';
-	@import '~material-icons-font/sass/Regular';
-	@import '~material-icons-font/sass/sizing';
-	@import '~material-icons-font/sass/coloring';
+	.md-app
+	{
+		height: 100vh;
+	}
 
 	.md-card {
 		width: 320px;
