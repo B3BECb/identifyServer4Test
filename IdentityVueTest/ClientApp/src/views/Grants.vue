@@ -138,7 +138,7 @@
 				await Axios({
 					method: "post",
 					url:    "/api/v1/grants",
-					params: { clientId: clientId },
+					params: { clientId },
 				});
 
 				await this.GetGrants();

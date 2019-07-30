@@ -74,7 +74,7 @@ namespace IdentityVueTest.Api
 			await Interaction.RevokeUserConsentAsync(clientId);
 			await Events.RaiseAsync(new GrantsRevokedEvent(User.GetSubjectId(), clientId));
 
-			return Redirect("/");
+			return new OkResult();
 		}
 	}
 }

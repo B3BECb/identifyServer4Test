@@ -42,6 +42,15 @@ namespace IdentityVueTest
 					context.Database.Migrate();
 
 					var userMgr = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+					var roleMgr = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+					var identityAdminRole = new IdentityRole { Name = "Identity administrator" };
+					var adminRole = new IdentityRole { Name = "Administrator" };
+					var userRole = new IdentityRole { Name = "User" };
+
+					await roleMgr.CreateAsync(identityAdminRole);
+					await roleMgr.CreateAsync(userRole);
+
 					var admin = await userMgr.FindByNameAsync("admin");
 					if(admin == null)
 					{
@@ -49,6 +58,7 @@ namespace IdentityVueTest
 						{
 							UserName = "admin",
 						};
+
 						var result = await userMgr.CreateAsync(admin, "admin");
 						if(!result.Succeeded)
 						{
@@ -59,11 +69,17 @@ namespace IdentityVueTest
 						{
 							new Claim(JwtClaimTypes.Name, "Identity Admin"),
 						});
-
 						if(!result.Succeeded)
 						{
 							throw new Exception(result.Errors.First().Description);
 						}
+
+						result = await userMgr.AddToRoleAsync(admin, identityAdminRole.Name);
+						if (!result.Succeeded)
+						{
+							throw new Exception(result.Errors.First().Description);
+						}
+
 						Console.WriteLine("Admin created");
 					}
 					else
