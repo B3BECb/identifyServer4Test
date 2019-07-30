@@ -1,18 +1,21 @@
 <template>
 	<div>
-		<md-app md-mode="reveal" style="height: 100vh;">
-			<md-app-toolbar class="md-primary">
-				<md-button class="md-icon-button" :to="{name: 'index'}">
+		<md-app md-mode = "reveal"
+				style = "height: 100vh;">
+			<md-app-toolbar class = "md-primary">
+				<md-button class = "md-icon-button"
+						   :to = "{name: 'index'}">
 					<md-icon>arrow_back</md-icon>
 				</md-button>
-				<span class="md-title">Client Application Access</span>
+				<span class = "md-title">Client Application Access</span>
 			</md-app-toolbar>
 
-			<md-app-content v-if = "IsLoading">
-				<md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
+			<md-app-content class = "md-layout md-alignment-center"
+							v-if = "IsLoading">
+				<md-progress-spinner md-mode = "indeterminate"></md-progress-spinner>
 			</md-app-content>
 
-			<md-app-content v-if="!Model || IsLoadingError">
+			<md-app-content v-if = "!Model || IsLoadingError">
 				<md-empty-state
 						class = "md-accent md-theme-error"
 						md-rounded
@@ -22,14 +25,14 @@
 				</md-empty-state>
 			</md-app-content>
 
-			<md-app-content v-else-if="Model.Grants.length">
-				<md-card v-for="grant in Model.Grants">
+			<md-app-content v-else-if = "Model.Grants.length && !IsLoading">
+				<md-card v-for = "grant in Model.Grants">
 					<md-card-header class = "md-title">
 						{{grant.ClientName}}
 					</md-card-header>
 
-					<md-card-media v-if="grant.ClientLogoUrl">
-						<img :src="grant.ClientLogoUrl">
+					<md-card-media v-if = "grant.ClientLogoUrl">
+						<img :src = "grant.ClientLogoUrl">
 					</md-card-media>
 
 					<md-card-content>
@@ -57,7 +60,7 @@
 
 					<md-card-actions>
 						<md-button class = "md-raised md-accent md-theme-error"
-								   @click="Revoke(grant.ClientId)">
+								   @click = "Revoke(grant.ClientId)">
 							Revoke
 						</md-button>
 					</md-card-actions>
@@ -66,7 +69,6 @@
 
 			<md-app-content v-else>
 				<md-empty-state
-						class = "md-accent md-theme-error"
 						md-rounded
 						md-icon = "apps"
 						md-label = "No grants"
@@ -92,7 +94,7 @@
 		MdProgress,
 		// @ts-ignore
 	} from "vue-material/dist/components";
-	import {DateTime} from "luxon";
+	import { DateTime } from "luxon";
 
 	Vue.use(MdButton);
 	Vue.use(MdCard);
@@ -111,12 +113,23 @@
 
 		public DateTime: any = DateTime;
 
-		public IsLoading: boolean = false;
+		public IsLoading: boolean      = false;
 		public IsLoadingError: boolean = false;
 
 		public async beforeMount()
 		{
-			await this.GetGrants();
+			this.IsLoading = true;
+
+			try
+			{
+				await this.GetGrants();
+			}
+			catch(exc)
+			{
+				this.IsLoadingError = true;
+			}
+
+			this.IsLoading = false;
 		}
 
 		public async Revoke(clientId: string)
@@ -130,39 +143,28 @@
 					url:    "/api/v1/grants",
 					params: { clientId: clientId },
 				});
+
+				await this.GetGrants();
+				this.IsLoading = false;
 			}
 			catch(exc)
 			{
 				this.IsLoadingError = true;
+				this.IsLoading      = false;
 			}
-
-			this.IsLoading = false;
-
-			await this.GetGrants();
 		}
 
 		private async GetGrants()
 		{
-			try
-			{
-				this.IsLoading = true;
+			let data: any = await Axios({
+				method: "get",
+				url:    "/api/v1/grants",
+				params: this.$route.query,
+			});
 
-				let data: any = await Axios({
-					method: "get",
-					url:    "/api/v1/grants",
-					params: this.$route.query,
-				});
+			data = Capitalize(data.data);
 
-				data = Capitalize(data.data);
-
-				this.Model = data as IGrantsViewModel;
-			}
-			catch(exc)
-			{
-				this.IsLoadingError = true;
-			}
-
-			this.IsLoading = false;
+			this.Model = data as IGrantsViewModel;
 		}
 	}
 </script>
